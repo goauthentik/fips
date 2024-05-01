@@ -1,10 +1,34 @@
 ARG DEBIAN_CODENAME
 
+FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim as equivs-builder
+
+ENV build_root="/build"
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends equivs && \
+    mkdir -p ${build_root} ${build_root}/output
+
+# libssl3
+RUN cd ${build_root} && \
+    rm -f *deb && \
+    apt download libssl3 && \
+    dpkg -e *deb libssl3/ && \
+    cd ${build_root}/output && \
+    equivs-build ../libssl3/control
+# openssl
+RUN cd ${build_root} && \
+    rm -f *deb && \
+    apt download openssl && \
+    dpkg -e *deb openssl/ && \
+    cd ${build_root}/output && \
+    equivs-build ../openssl/control
+
 FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim
 
 ARG OPENSSL_VERSION
 ENV build_root="/build"
 
+COPY --from=equivs-builder ${build_root}/output ${build_root}/fake-deb
 RUN mkdir -p $build_root && \
     apt-get update && \
     apt-get install -y --no-install-recommends build-essential wget ca-certificates && \
@@ -22,7 +46,8 @@ RUN mkdir -p $build_root && \
     sed -i "s:# .include fipsmodule.cnf:.include /usr/local/ssl/fipsmodule.cnf:" /usr/local/ssl/openssl.cnf && \
     sed -i 's:# fips = fips_sect:fips = fips_sect:' /usr/local/ssl/openssl.cnf && \
     sed -i 's:# \[provider_sect\]:\[provider_sect\]:' /usr/local/ssl/openssl.cnf && \
-    rm -rf ${build_root} && \
     apt-get remove --purge -y build-essential && \
     apt-get autoremove --purge -y && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    dpkg -i ${build_root}/fake-deb/*deb && \
+    rm -rf ${build_root}
