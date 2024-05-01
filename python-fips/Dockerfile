@@ -1,34 +1,15 @@
+#
+# NOTE: THIS DOCKERFILE IS GENERATED VIA "apply-templates.sh"
+#
+# PLEASE DO NOT EDIT IT DIRECTLY.
+#
+
 ARG BUILD_IMAGE
-
-## Stage 1 to download files (so we can use them in the build stage without needing openssl)
-FROM docker.io/library/debian:bookworm-slim as python-build-download
-
-ARG PYTHON_VERSION
-ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
-# https://github.com/pypa/get-pip
-ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/dbf0c85f76fb6e1ab42aa672ffca6f0a675d9ee4/public/get-pip.py
-ENV PYTHON_GET_PIP_SHA256 dfe9fd5c28dc98b5ac17979a953ea550cec37ae1b47a5116007395bfacff2ab9
-
-WORKDIR /build
-
-RUN apt-get update && \
-	apt-get install -y ca-certificates wget gnupg && \
-	# Download Python source
-	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz" && \
-	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc" && \
-	# Verify Python source
-	GNUPGHOME="$(mktemp -d)" && export GNUPGHOME && \
-	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY" && \
-	gpg --batch --verify python.tar.xz.asc python.tar.xz && \
-	gpgconf --kill all && \
-	rm -rf "$GNUPGHOME" python.tar.xz.asc;
-
-RUN wget -O get-pip.py "$PYTHON_GET_PIP_URL"; \
-	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum -c -
 
 FROM ${BUILD_IMAGE}
 
 ARG PYTHON_VERSION
+
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
 
@@ -41,15 +22,13 @@ ENV LANG C.UTF-8
 RUN set -eux; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends \
+		ca-certificates \
 		netbase \
 		tzdata \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
 ENV GPG_KEY 7169605F62C751356D054A26A821E680E5FA6305
-
-WORKDIR /build
-COPY --from=python-build-download /build/* /build
 
 RUN set -eux; \
 	\
@@ -58,6 +37,7 @@ RUN set -eux; \
 	apt-get install -y --no-install-recommends \
 		dpkg-dev \
 		gcc \
+		gnupg \
 		libbluetooth-dev \
 		libbz2-dev \
 		libc6-dev \
@@ -69,13 +49,22 @@ RUN set -eux; \
 		libncursesw5-dev \
 		libreadline-dev \
 		libsqlite3-dev \
+		libssl-dev \
 		make \
 		tk-dev \
 		uuid-dev \
+		wget \
 		xz-utils \
 		zlib1g-dev \
 	; \
 	\
+	wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"; \
+	wget -O python.tar.xz.asc "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz.asc"; \
+	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
+	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys "$GPG_KEY"; \
+	gpg --batch --verify python.tar.xz.asc python.tar.xz; \
+	gpgconf --kill all; \
+	rm -rf "$GNUPGHOME" python.tar.xz.asc; \
 	mkdir -p /usr/src/python; \
 	tar --extract --directory /usr/src/python --strip-components=1 --file python.tar.xz; \
 	rm python.tar.xz; \
@@ -134,7 +123,6 @@ RUN set -eux; \
 		| sort -u \
 		| xargs -r apt-mark manual \
 	; \
-	apt-get remove --purge -y libssl3 \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
@@ -151,11 +139,27 @@ RUN set -eux; \
 
 # if this is called "PIP_VERSION", pip explodes with "ValueError: invalid truth value '<VERSION>'"
 ENV PYTHON_PIP_VERSION 24.0
+# https://github.com/pypa/get-pip
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/dbf0c85f76fb6e1ab42aa672ffca6f0a675d9ee4/public/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 dfe9fd5c28dc98b5ac17979a953ea550cec37ae1b47a5116007395bfacff2ab9
 
 RUN set -eux; \
+	\
+	savedAptMark="$(apt-mark showmanual)"; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends wget; \
+	\
+	wget -O get-pip.py "$PYTHON_GET_PIP_URL"; \
+	echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum -c -; \
+	\
+	apt-mark auto '.*' > /dev/null; \
+	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark > /dev/null; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	rm -rf /var/lib/apt/lists/*; \
+	\
 	export PYTHONDONTWRITEBYTECODE=1; \
 	\
-	python /build/get-pip.py \
+	python get-pip.py \
 		--disable-pip-version-check \
 		--no-cache-dir \
 		--no-compile \
