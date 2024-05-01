@@ -35,8 +35,15 @@ xmlsec1-fips: ## Build image with xmlsec1 (on top of debian)
 python-fips:
 	docker build ${DOCKER_BUILDX_FLAGS} python-fips/ \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
-		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips" \
+		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips" \
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}"
+
+python-fips-deps:
+	docker build ${DOCKER_BUILDX_FLAGS} python-fips-deps/ \
+		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-deps \
+		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips" \
+		--build-arg="CRYPTOGRAPHY_VERSION=${CRYPTOGRAPHY_VERSION}" \
+		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}"
 
 test: all
 	# Test that both images have OpenSSL with FIPS enabled
