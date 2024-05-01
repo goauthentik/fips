@@ -13,6 +13,7 @@ RUN mkdir -p $build_root && \
     tar xvf openssl.tgz && \
     apt-get remove --purge -y wget ca-certificates openssl && \
     cd $build_root/openssl-${OPENSSL_VERSION} && \
+    sed -i "s:BUILD_METADATA=:BUILD_METADATA=ak-fips:" VERSION.dat && \
     ./config fips $cryptography_ssl_options && \
     make depend && \
     make -j$(nproc) && \
