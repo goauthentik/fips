@@ -1,16 +1,18 @@
-FROM debian:bookworm-slim
+ARG DEBIAN_CODENAME
+ARG OPENSSL_VERSION
+
+FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim
 
 ARG build_root="/build"
-ARG openssl_version="3.0.11"
 
 RUN mkdir -p $build_root && \
     apt-get update && \
     apt-get install -y --no-install-recommends build-essential wget ca-certificates && \
     cd ${build_root} && \
-    wget https://www.openssl.org/source/openssl-$openssl_version.tar.gz -O openssl.tgz && \
+    wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -O openssl.tgz && \
     tar xvf openssl.tgz && \
     apt-get remove --purge -y wget ca-certificates openssl && \
-    cd $build_root/openssl-$openssl_version && \
+    cd $build_root/openssl-${OPENSSL_VERSION} && \
     ./config fips $cryptography_ssl_options && \
     make depend && \
     make -j$(nproc) && \
