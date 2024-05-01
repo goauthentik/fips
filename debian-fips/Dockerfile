@@ -60,4 +60,6 @@ RUN mkdir -p $build_root && \
     dpkg -i ${build_root}/fake-deb/*deb && \
     apt-mark hold libssl-dev libssl3 openssl && \
     rm -rf ${build_root} && \
-    ln -s /usr/local/bin/openssl /usr/bin/openssl
+    ln -s /usr/local/bin/openssl /usr/bin/openssl && \
+    # https://stackoverflow.com/questions/76049736/ee-certificate-key-too-weak-error-in-openssl-3-1-0-fips-enabled
+    echo "\n[algorithm_sect]\ndefault_properties = fips=yes" >> /usr/local/ssl/openssl.cnf
