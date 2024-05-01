@@ -1,6 +1,8 @@
 .PHONY: all debian-fips python-fips
 .SHELLFLAGS += ${SHELLFLAGS} -e
 
+DOCKER_BUILDX_FLAGS =
+
 IMAGE_REPO = ghcr.io/beryju
 IMAGE_PREFIX = fips
 
@@ -11,13 +13,13 @@ PYTHON_VERSION = 3.12.3
 all: debian-fips python-fips
 
 debian-fips:
-	docker build debian-fips/ \
+	docker build ${DOCKER_BUILDX_FLAGS} debian-fips/ \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}" \
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}"
 
 python-fips:
-	docker build python-fips/ \
+	docker build ${DOCKER_BUILDX_FLAGS} python-fips/ \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips" \
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}"
