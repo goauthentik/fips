@@ -8,6 +8,7 @@ IMAGE_PREFIX = fips
 
 DEBIAN_CODENAME = bookworm
 OPENSSL_VERSION = 3.0.11
+OPENSSL_VERSION_SUFFIX = ak-fips
 PYTHON_VERSION = 3.12.3
 XMLSEC_VERSION = 1.3.4
 
@@ -24,7 +25,8 @@ debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
 	docker build ${DOCKER_BUILDX_FLAGS} debian-fips/ \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}" \
-		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}"
+		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
+		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
 
 xmlsec1-fips: ## Build image with xmlsec1 (on top of debian)
 	docker build ${DOCKER_BUILDX_FLAGS} xmlsec1-fips/ \
@@ -46,11 +48,15 @@ python-fips-deps:
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}"
 
 test:
-	# Test that both images have OpenSSL with FIPS enabled
+	# Test that base images has OpenSSL with FIPS enabled
 	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips \
-		bash -c "openssl version; openssl list -providers | grep fips"
+		bash -c "openssl version | grep ${OPENSSL_VERSION_SUFFIX}"
+	# Test xmlsec1 image
+	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips \
+		bash -c "openssl version | grep ${OPENSSL_VERSION_SUFFIX}"
+	# Test python image
 	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
-		bash -c "openssl version; openssl list -providers | grep fips"
+		bash -c "openssl version | grep ${OPENSSL_VERSION_SUFFIX}"
 	# Test Python imported version
 	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
-		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"
+		bash -c 'python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)" | grep ${OPENSSL_VERSION_SUFFIX}'

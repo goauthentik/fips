@@ -22,10 +22,18 @@ RUN cd ${build_root} && \
     dpkg -e *deb openssl/ && \
     cd ${build_root}/output && \
     equivs-build ../openssl/control
+# libssl-dev
+RUN cd ${build_root} && \
+    rm -f *deb && \
+    apt download libssl-dev && \
+    dpkg -e *deb libssl-dev/ && \
+    cd ${build_root}/output && \
+    equivs-build ../libssl-dev/control
 
 FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim
 
 ARG OPENSSL_VERSION
+ARG OPENSSL_VERSION_SUFFIX
 ENV build_root="/build"
 
 COPY --from=equivs-builder ${build_root}/output ${build_root}/fake-deb
@@ -37,7 +45,7 @@ RUN mkdir -p $build_root && \
     tar xvf openssl.tgz && \
     apt-get remove --purge -y wget ca-certificates openssl && \
     cd $build_root/openssl-${OPENSSL_VERSION} && \
-    sed -i "s:BUILD_METADATA=:BUILD_METADATA=ak-fips:" VERSION.dat && \
+    sed -i "s:BUILD_METADATA=:BUILD_METADATA=${OPENSSL_VERSION_SUFFIX}:" VERSION.dat && \
     ./config fips $cryptography_ssl_options && \
     make depend && \
     make -j$(nproc) && \
