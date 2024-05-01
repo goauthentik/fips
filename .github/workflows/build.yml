@@ -23,6 +23,4 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - run: |
-          make all test
-        env:
-          DOCKER_BUILDX_FLAGS: --platform linux/amd64,linux/arm64 --push
+          make DOCKER_BUILDX_FLAGS="--platform linux/amd64,linux/arm64 --push" all test
