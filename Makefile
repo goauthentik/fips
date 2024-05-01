@@ -1,4 +1,4 @@
-.PHONY: all debian-fips python-fips
+.PHONY: all debian-fips python-fips xmlsec1-fips
 .SHELLFLAGS += ${SHELLFLAGS} -e
 
 DOCKER_BUILDX_FLAGS =

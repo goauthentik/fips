@@ -15,8 +15,6 @@ RUN mkdir -p ${build_root} && \
         wget ca-certificates gnupg \
         # Required to build
         build-essential libxml2 libxml2-dev libltdl-dev && \
-    # Force remove libssl3 and openssl to ensure we build against our own
-    dpkg -r --force-depends libssl3 openssl && \
     wget http://www.aleksey.com/xmlsec/download/xmlsec1-${XMLSEC_VERSION}.tar.gz -O xmlsec.tgz && \
     wget https://www.aleksey.com/xmlsec/download/xmlsec1-${XMLSEC_VERSION}.sig -O xmlsec.sig && \
     wget https://www.aleksey.com/xmlsec/download/aleksey%40aleksey.com.gpg -O gpg.key && \
@@ -35,9 +33,8 @@ RUN mkdir -p ${build_root} && \
     make -j $(nproc) && \
     make check && \
     make install && \
-    apt-get remove --purge -y wget ca-certificates openssl libssl3 && \
-    rm -rf ${build_root} && \
-    apt-get remove --purge -y build-essential && \
+    apt-get remove --purge -y wget ca-certificates build-essential && \
     apt-get autoremove --purge -y && \
+    rm -rf ${build_root} && \
     rm -rf /var/lib/apt/lists/*
     # pip wheel -w ${wheel_output_dir} --no-cache --no-binary xmlsec xmlsec
