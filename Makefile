@@ -20,7 +20,7 @@ python-fips:
 	docker build python-fips/ \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips" \
-		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
+		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}"
 
 test: all
 	# Test that both images have OpenSSL with FIPS enabled
@@ -28,3 +28,6 @@ test: all
 		bash -c "openssl list -providers | grep fips"
 	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
 		bash -c "openssl list -providers | grep fips"
+	# Test Python imported version
+	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
+		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"
