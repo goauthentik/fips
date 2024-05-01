@@ -1,4 +1,4 @@
-.PHONY: all debian-fips python-fips xmlsec1-fips
+.PHONY: all push test debian-fips python-fips xmlsec1-fips
 .SHELLFLAGS += ${SHELLFLAGS} -e
 
 DOCKER_BUILDX_FLAGS =
@@ -22,30 +22,35 @@ help:  ## Show this help
 	@echo ""
 
 debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
-	docker build ${DOCKER_BUILDX_FLAGS} debian-fips/ \
+	docker build ${DOCKER_BUILDX_FLAGS} $@ / \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}" \
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
 
 xmlsec1-fips: ## Build image with xmlsec1 (on top of debian)
-	docker build ${DOCKER_BUILDX_FLAGS} xmlsec1-fips/ \
+	docker build ${DOCKER_BUILDX_FLAGS} $@ / \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips" \
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
 
 python-fips:
-	docker build ${DOCKER_BUILDX_FLAGS} python-fips/ \
+	docker build ${DOCKER_BUILDX_FLAGS} $@ / \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips" \
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}"
 
 python-fips-deps:
-	docker build ${DOCKER_BUILDX_FLAGS} python-fips-deps/ \
+	docker build ${DOCKER_BUILDX_FLAGS} $@ / \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-deps \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips" \
 		--build-arg="CRYPTOGRAPHY_VERSION=${CRYPTOGRAPHY_VERSION}" \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}"
+
+push:
+	docker push ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips
+	docker push ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips
+	docker push ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips
 
 test:
 	# Test that base images has OpenSSL with FIPS enabled
