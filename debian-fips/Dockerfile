@@ -1,9 +1,9 @@
 ARG DEBIAN_CODENAME
-ARG OPENSSL_VERSION
 
 FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim
 
-ARG build_root="/build"
+ARG OPENSSL_VERSION
+ENV build_root="/build"
 
 RUN mkdir -p $build_root && \
     apt-get update && \
