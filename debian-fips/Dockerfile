@@ -23,22 +23,3 @@ RUN mkdir -p $build_root && \
     apt-get remove --purge -y build-essential && \
     apt-get autoremove --purge -y && \
     rm -rf /var/lib/apt/lists/*
-
-ENV OPENSSL_MODULES=/usr/local/lib/ossl-modules/
-# ENV OPENSSL_CONF=/ak-root/ssl/openssl-3.0.11/test/fips-and-base.cnf
-# ENV OPENSSL_ENGINES=/usr/local/lib/ossl-modules/
-# ENV OPENSSL_CONF_INCLUDE=/usr/local/lib/ossl-modules/
-
-# FROM debian:bookworm-slim
-
-# RUN apt-get update && \
-#     apt-get install -y openssl && \
-#     sed -i "s:# .include fipsmodule.cnf:.include /usr/local/ssl/fipsmodule.cnf:" /etc/ssl/openssl.cnf && \
-#     sed -i 's:# fips = fips_sect:fips = fips_sect:' /etc/ssl/openssl.cnf && \
-#     sed -i 's:# \[provider_sect\]:\[provider_sect\]:' /etc/ssl/openssl.cnf
-
-# COPY --from=build /usr/local/lib/ossl-modules/fips.so /usr/local/lib/ossl-modules/fips.so
-# COPY --from=build /usr/local/ssl/fipsmodule.cnf /usr/local/ssl/fipsmodule.cnf
-
-# ENV OPENSSL_MODULES=/usr/local/lib/ossl-modules/
-# # ENV OPENSSL_CONF_INCLUDE=/usr/local/ssl/fipsmodule.cnf
