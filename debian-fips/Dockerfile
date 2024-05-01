@@ -58,5 +58,6 @@ RUN mkdir -p $build_root && \
     apt-get autoremove --purge -y && \
     rm -rf /var/lib/apt/lists/* && \
     dpkg -i ${build_root}/fake-deb/*deb && \
+    apt-mark hold libssl-dev libssl3 openssl && \
     rm -rf ${build_root} && \
     ln -s /usr/local/bin/openssl /usr/bin/openssl
