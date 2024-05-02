@@ -37,4 +37,3 @@ RUN mkdir -p ${build_root} && \
     apt-get autoremove --purge -y && \
     rm -rf ${build_root} && \
     rm -rf /var/lib/apt/lists/*
-    # pip wheel -w ${wheel_output_dir} --no-cache --no-binary xmlsec xmlsec
