@@ -5,6 +5,9 @@ inputs:
   target:
     description: "make target to build"
     required: true
+  container_token:
+    description: "GHCR token"
+    required: true
 
 runs:
   using: "composite"
@@ -15,7 +18,7 @@ runs:
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        password: ${{ inputs.container_token }}
     - shell: bash
       run: |
         set -xe
