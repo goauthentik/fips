@@ -19,11 +19,10 @@ RUN pip install --no-cache cffi && \
     pip wheel -w ${wheel_output_dir} --no-cache --no-binary cryptography cryptography==${CRYPTOGRAPHY_VERSION} && \
     pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: xmlsec lxml && \
     apt-get remove --purge -y rustc cargo pkg-config build-essential && \
-    apt-get autoremove --purge
+    apt-get autoremove --purge -y
 
 FROM ${BUILD_IMAGE}
 
 COPY --from=build /wheels /wheels
 
-RUN pip install /wheels/* && \
-    rm -rf /wheels
+RUN pip install /wheels/*
