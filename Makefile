@@ -67,6 +67,9 @@ test:
 	# Test Python imported version
 	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips \
 		bash -c 'python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)" | grep ${OPENSSL_VERSION_SUFFIX}'
-	# Test cryptography
+	# Test cryptography (enable FIPS)
 	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-full \
-		bash -c 'python -c "from cryptography.hazmat.backends.openssl.backend import backend; backend._enable_fips(); print(backend._fips_enabled)'
+		python -c "from cryptography.hazmat.backends.openssl.backend import backend; backend._enable_fips(); print(backend._fips_enabled)"
+	# Test LXML & xmlsec
+	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-full \
+		python -c "import xmlsec; from lxml import etree"
