@@ -48,12 +48,6 @@ python-fips-full: ## Build 'final' image which includes cryptography and xmlsec
 		--build-arg="CRYPTOGRAPHY_VERSION=${CRYPTOGRAPHY_VERSION}" \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}"
 
-push:
-	docker push ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips
-	docker push ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips
-	docker push ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips
-	docker push ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-full
-
 test:
 	# Test that base images has OpenSSL with FIPS enabled
 	docker run -it --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips \
