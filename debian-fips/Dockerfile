@@ -50,6 +50,7 @@ RUN mkdir -p $build_root && \
     make depend && \
     make -j$(nproc) && \
     make install_sw install_ssldirs install_fips && \
+    (cp -r /usr/local/lib64/* /usr/local/lib/ || true) && \
     openssl fipsinstall -out /usr/local/ssl/fipsmodule.cnf -module $(find /usr/local -name fips.so) && \
     sed -i "s:# .include fipsmodule.cnf:.include /usr/local/ssl/fipsmodule.cnf:" /usr/local/ssl/openssl.cnf && \
     sed -i 's:# fips = fips_sect:fips = fips_sect:' /usr/local/ssl/openssl.cnf && \
