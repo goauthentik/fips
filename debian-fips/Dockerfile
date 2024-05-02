@@ -62,4 +62,5 @@ RUN mkdir -p $build_root && \
     rm -rf ${build_root} && \
     ln -s /usr/local/bin/openssl /usr/bin/openssl && \
     # https://stackoverflow.com/questions/76049736/ee-certificate-key-too-weak-error-in-openssl-3-1-0-fips-enabled
+    sed -i 's:# activate = 1:activate = 1:' /usr/local/ssl/openssl.cnf && \
     echo "\n[algorithm_sect]\ndefault_properties = fips=yes" >> /usr/local/ssl/openssl.cnf
