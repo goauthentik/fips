@@ -13,8 +13,10 @@ RUN mkdir -p ${build_root} && \
     apt-get install -y --no-install-recommends \
         # Required to fetch
         wget ca-certificates gnupg \
+        # Required to run
+        libxml2 \
         # Required to build
-        build-essential libxml2 libxml2-dev libltdl-dev && \
+        build-essential libxml2-dev libltdl-dev && \
     wget http://www.aleksey.com/xmlsec/download/xmlsec1-${XMLSEC_VERSION}.tar.gz -O xmlsec.tgz && \
     wget https://www.aleksey.com/xmlsec/download/xmlsec1-${XMLSEC_VERSION}.sig -O xmlsec.sig && \
     wget https://www.aleksey.com/xmlsec/download/aleksey%40aleksey.com.gpg -O gpg.key && \
@@ -33,7 +35,7 @@ RUN mkdir -p ${build_root} && \
     make -j $(nproc) && \
     make check && \
     make install && \
-    apt-get remove --purge -y wget ca-certificates build-essential && \
+    apt-get remove --purge -y wget ca-certificates build-essential libxml2-dev libltdl-dev && \
     apt-get autoremove --purge -y && \
     rm -rf ${build_root} && \
     rm -rf /var/lib/apt/lists/*

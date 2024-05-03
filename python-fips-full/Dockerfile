@@ -15,7 +15,9 @@ RUN pip install --no-cache cffi && \
         # Required for cryptography
         rustc cargo pkg-config \
         # Required for lxml
-        libxslt-dev zlib1g-dev && \
+        libxslt-dev zlib1g-dev \
+        # Required for xmlsec
+        libltdl-dev && \
     pip wheel -w ${wheel_output_dir} --no-cache --no-binary cryptography cryptography==${CRYPTOGRAPHY_VERSION} && \
     pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: xmlsec lxml && \
     apt-get remove --purge -y rustc cargo pkg-config build-essential && \
