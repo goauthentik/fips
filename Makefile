@@ -66,4 +66,4 @@ test:
 		python -c "from cryptography.hazmat.backends.openssl.backend import backend; backend._enable_fips(); print(backend._fips_enabled)"
 	# Test LXML & xmlsec
 	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-full \
-		python -c "import xmlsec; from lxml import etree"
+		python -c "import xmlsec; from lxml import etree; print(xmlsec.get_libxml_version(), xmlsec.get_libxmlsec_version(), etree.LIBXML_COMPILED_VERSION)"
