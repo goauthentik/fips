@@ -8,6 +8,9 @@ inputs:
   container_token:
     description: "GHCR token"
     required: true
+  platforms:
+    description: Platforms to build for
+    default: linux/arm64,linux/amd64
 
 runs:
   using: "composite"
@@ -22,7 +25,7 @@ runs:
     - shell: bash
       run: |
         set -xe
-        docker buildx create --use --platform=linux/arm64,linux/amd64 --name multi-platform-builder
+        docker buildx create --use --platform=${{ inputs.platforms }} --name multi-platform-builder
         docker buildx inspect --bootstrap
         docker buildx install
-        make DOCKER_BUILDX_FLAGS="--platform linux/amd64,linux/arm64 --push" ${{ inputs.target }}
+        make DOCKER_BUILDX_FLAGS="--platform ${{ inputs.platforms }} --push" ${{ inputs.target }}

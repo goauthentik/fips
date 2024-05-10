@@ -53,3 +53,4 @@ jobs:
         with:
           target: python-fips-full
           container_token: ${{ secrets.GITHUB_TOKEN }}
+          platforms: linux/amd64
