@@ -1,6 +1,6 @@
 ## FIPS Container images
 
-[![Build](https://github.com/BeryJu/fips/actions/workflows/build.yml/badge.svg)](https://github.com/BeryJu/fips/actions/workflows/build.yml)
+[![Build](https://github.com/goauthentik/fips/actions/workflows/build.yml/badge.svg)](https://github.com/goauthentik/fips/actions/workflows/build.yml)
 
 A collection of container images with a FIPS-enabled OpenSSL build.
 

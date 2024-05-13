@@ -3,7 +3,7 @@
 
 DOCKER_BUILDX_FLAGS =
 
-IMAGE_REPO = ghcr.io/beryju
+IMAGE_REPO = ghcr.io/goauthentik
 IMAGE_PREFIX = fips
 
 DEBIAN_CODENAME = bookworm
