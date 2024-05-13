@@ -12,7 +12,7 @@ RUN mkdir -p ${build_root} && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
         # Required to fetch
-        wget ca-certificates gnupg \
+        wget gnupg \
         # Required to run
         libxml2 \
         # Required to build
@@ -35,7 +35,7 @@ RUN mkdir -p ${build_root} && \
     make -j $(nproc) && \
     make check && \
     make install && \
-    apt-get remove --purge -y wget ca-certificates build-essential libxml2-dev libltdl-dev && \
+    apt-get remove --purge -y wget gnupg build-essential libxml2-dev libltdl-dev && \
     apt-get autoremove --purge -y && \
     rm -rf ${build_root} && \
     rm -rf /var/lib/apt/lists/*

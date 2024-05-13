@@ -39,11 +39,11 @@ ENV build_root="/build"
 COPY --from=equivs-builder ${build_root}/output ${build_root}/fake-deb
 RUN mkdir -p $build_root && \
     apt-get update && \
-    apt-get install -y --no-install-recommends build-essential wget ca-certificates && \
+    apt-get install -y --no-install-recommends build-essential wget && \
     cd ${build_root} && \
     wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -O openssl.tgz && \
     tar xvf openssl.tgz && \
-    apt-get remove --purge -y wget ca-certificates openssl && \
+    apt-get remove --purge -y wget openssl && \
     cd $build_root/openssl-${OPENSSL_VERSION} && \
     sed -i "s:BUILD_METADATA=:BUILD_METADATA=${OPENSSL_VERSION_SUFFIX}:" VERSION.dat && \
     ./config fips $cryptography_ssl_options && \
@@ -65,3 +65,5 @@ RUN mkdir -p $build_root && \
     # https://stackoverflow.com/questions/76049736/ee-certificate-key-too-weak-error-in-openssl-3-1-0-fips-enabled
     sed -i 's:# activate = 1:activate = 1:' /usr/local/ssl/openssl.cnf && \
     echo "\n[algorithm_sect]\ndefault_properties = fips=yes" >> /usr/local/ssl/openssl.cnf
+
+ENV SSL_CERT_DIR=/etc/ssl/certs
