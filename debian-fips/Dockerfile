@@ -66,4 +66,7 @@ RUN mkdir -p $build_root && \
     sed -i 's:# activate = 1:activate = 1:' /usr/local/ssl/openssl.cnf && \
     echo "\n[algorithm_sect]\ndefault_properties = fips=yes" >> /usr/local/ssl/openssl.cnf
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 ENV SSL_CERT_DIR=/etc/ssl/certs
