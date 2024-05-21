@@ -39,7 +39,7 @@ ENV build_root="/build"
 COPY --from=equivs-builder ${build_root}/output ${build_root}/fake-deb
 RUN mkdir -p $build_root && \
     apt-get update && \
-    apt-get install -y --no-install-recommends build-essential wget && \
+    apt-get install -y --no-install-recommends build-essential wget ca-certificates && \
     cd ${build_root} && \
     wget https://www.openssl.org/source/openssl-${OPENSSL_VERSION}.tar.gz -O openssl.tgz && \
     tar xvf openssl.tgz && \
