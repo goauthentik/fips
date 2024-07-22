@@ -9,7 +9,7 @@ IMAGE_PREFIX = fips
 DEBIAN_CODENAME = bookworm
 OPENSSL_VERSION = 3.0.9
 OPENSSL_VERSION_SUFFIX = ak-fips
-PYTHON_VERSION = 3.12.3
+PYTHON_VERSION = 3.12.4
 XMLSEC_VERSION = 1.3.4
 
 all: debian-fips xmlsec1-fips python-fips python-fips-full
