@@ -7,10 +7,13 @@ IMAGE_REPO = ghcr.io/goauthentik
 IMAGE_PREFIX = fips
 
 DEBIAN_CODENAME = bookworm
+# https://www.openssl.org/source/
 OPENSSL_VERSION = 3.0.9
 OPENSSL_VERSION_SUFFIX = ak-fips
+# https://www.python.org/doc/versions/
 PYTHON_VERSION = 3.12.4
-XMLSEC_VERSION = 1.3.4
+# https://www.aleksey.com/xmlsec/
+XMLSEC_VERSION = 1.3.5
 
 all: debian-fips xmlsec1-fips python-fips python-fips-full
 
