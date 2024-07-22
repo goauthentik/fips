@@ -9,7 +9,7 @@ WORKDIR /build/cryptography
 RUN pip install --no-cache cffi && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential \
+        build-essential libffi-dev \
         # Required for cryptography
         rustc cargo pkg-config \
         # Required for lxml
