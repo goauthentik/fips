@@ -10,8 +10,7 @@ DEBIAN_CODENAME = bookworm
 OPENSSL_VERSION = 3.0.9
 OPENSSL_VERSION_SUFFIX = ak-fips
 PYTHON_VERSION = 3.12.3
-XMLSEC_VERSION = 1.3.5
-CRYPTOGRAPHY_VERSION = 42.0.5
+XMLSEC_VERSION = 1.3.4
 
 all: debian-fips xmlsec1-fips python-fips python-fips-full
 
@@ -45,7 +44,6 @@ python-fips-full: ## Build 'final' image which includes cryptography and xmlsec
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-full \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips" \
-		--build-arg="CRYPTOGRAPHY_VERSION=${CRYPTOGRAPHY_VERSION}" \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}"
 
 test:

@@ -2,9 +2,7 @@ ARG BUILD_IMAGE
 
 FROM ${BUILD_IMAGE} as build
 
-ARG XMLSEC_VERSION
-ARG CRYPTOGRAPHY_VERSION
-
+COPY ./requirements.txt /build
 ENV wheel_output_dir /wheels
 
 WORKDIR /build/cryptography
@@ -18,8 +16,7 @@ RUN pip install --no-cache cffi && \
         libxslt-dev zlib1g-dev \
         # Required for xmlsec
         libltdl-dev && \
-    pip wheel -w ${wheel_output_dir} --no-cache --no-binary cryptography cryptography==${CRYPTOGRAPHY_VERSION} && \
-    pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: xmlsec lxml && \
+    pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: -r /build/requirements.txt && \
     apt-get remove --purge -y rustc cargo pkg-config build-essential && \
     apt-get autoremove --purge -y
 
