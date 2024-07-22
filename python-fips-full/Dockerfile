@@ -1,9 +1,9 @@
 ARG BUILD_IMAGE
 
-FROM ${BUILD_IMAGE} as build
+FROM ${BUILD_IMAGE} AS build
 
-COPY ./requirements.txt /build
-ENV wheel_output_dir /wheels
+COPY ./requirements.txt /build/requirements.txt
+ENV wheel_output_dir=/wheels
 
 WORKDIR /build/cryptography
 RUN pip install --no-cache cffi && \

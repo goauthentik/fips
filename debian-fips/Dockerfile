@@ -1,6 +1,6 @@
 ARG DEBIAN_CODENAME
 
-FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim as equivs-builder
+FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim AS equivs-builder
 
 ENV build_root="/build"
 
