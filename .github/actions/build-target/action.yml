@@ -14,6 +14,9 @@ inputs:
   extra_args:
     description: Extra args to `docker buildx` command
     default: "--push"
+  image_suffix:
+    description: Image suffix
+    default: ""
 
 runs:
   using: "composite"
@@ -31,4 +34,7 @@ runs:
         docker buildx create --use --platform=${{ inputs.platforms }} --name multi-platform-builder
         docker buildx inspect --bootstrap
         docker buildx install
-        make DOCKER_BUILDX_FLAGS="--platform ${{ inputs.platforms }} ${{ inputs.extra_args }}" ${{ inputs.target }}
+        make \
+          DOCKER_BUILDX_FLAGS="--platform ${{ inputs.platforms }} ${{ inputs.extra_args }}" \
+          IMAGE_SUFFIX="${{ inputs.image_suffix }}"
+          ${{ inputs.target }}
