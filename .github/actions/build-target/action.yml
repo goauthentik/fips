@@ -36,5 +36,5 @@ runs:
         docker buildx install
         make \
           DOCKER_BUILDX_FLAGS="--platform ${{ inputs.platforms }} ${{ inputs.extra_args }}" \
-          IMAGE_SUFFIX="${{ inputs.image_suffix }}"
+          IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
           ${{ inputs.target }}
