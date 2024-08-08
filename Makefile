@@ -11,7 +11,7 @@ DEBIAN_CODENAME = bookworm
 OPENSSL_VERSION = 3.0.9
 OPENSSL_VERSION_SUFFIX = ak-fips
 # https://www.python.org/doc/versions/
-PYTHON_VERSION = 3.12.4
+PYTHON_VERSION = 3.12.5
 # https://www.aleksey.com/xmlsec/
 XMLSEC_VERSION = 1.3.5
 
