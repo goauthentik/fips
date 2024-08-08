@@ -22,6 +22,7 @@ jobs:
         with:
           target: debian-fips
           container_token: ${{ secrets.GITHUB_TOKEN }}
+          image_suffix: "${{ github.event_name != 'pull_request' && github.event.number || '' }}"
   xmlsec1-fips:
     needs:
       - debian-fips
@@ -33,6 +34,7 @@ jobs:
         with:
           target: xmlsec1-fips
           container_token: ${{ secrets.GITHUB_TOKEN }}
+          image_suffix: "${{ github.event_name != 'pull_request' && github.event.number || '' }}"
   python-fips:
     needs:
       - xmlsec1-fips
@@ -44,6 +46,7 @@ jobs:
         with:
           target: python-fips
           container_token: ${{ secrets.GITHUB_TOKEN }}
+          image_suffix: "${{ github.event_name != 'pull_request' && github.event.number || '' }}"
   python-fips-full:
     needs:
       - python-fips
@@ -55,3 +58,4 @@ jobs:
         with:
           target: python-fips-full
           container_token: ${{ secrets.GITHUB_TOKEN }}
+          image_suffix: "${{ github.event_name != 'pull_request' && github.event.number || '' }}"

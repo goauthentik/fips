@@ -1,27 +1,24 @@
 ARG BUILD_IMAGE
 
-FROM ${BUILD_IMAGE} as build
+FROM ${BUILD_IMAGE} AS build
 
-ARG XMLSEC_VERSION
-ARG CRYPTOGRAPHY_VERSION
-
-ENV wheel_output_dir /wheels
+COPY ./requirements.txt /build/requirements.txt
+ENV wheel_output_dir=/wheels
 
 WORKDIR /build/cryptography
 RUN pip install --no-cache cffi && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        build-essential \
+        build-essential libffi-dev \
         # Required for cryptography
-        rustc cargo pkg-config \
+        curl pkg-config \
         # Required for lxml
         libxslt-dev zlib1g-dev \
         # Required for xmlsec
         libltdl-dev && \
-    pip wheel -w ${wheel_output_dir} --no-cache --no-binary cryptography cryptography==${CRYPTOGRAPHY_VERSION} && \
-    pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: xmlsec lxml && \
-    apt-get remove --purge -y rustc cargo pkg-config build-essential && \
-    apt-get autoremove --purge -y
+    curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    . "$HOME/.cargo/env" && \
+    pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: -r /build/requirements.txt
 
 FROM ${BUILD_IMAGE}
 

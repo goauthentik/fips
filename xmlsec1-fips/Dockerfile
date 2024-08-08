@@ -17,12 +17,10 @@ RUN mkdir -p ${build_root} && \
         libxml2 \
         # Required to build
         build-essential libxml2-dev libltdl-dev && \
-    wget http://www.aleksey.com/xmlsec/download/xmlsec1-${XMLSEC_VERSION}.tar.gz -O xmlsec.tgz && \
-    wget https://www.aleksey.com/xmlsec/download/xmlsec1-${XMLSEC_VERSION}.sig -O xmlsec.sig && \
-    wget https://www.aleksey.com/xmlsec/download/aleksey%40aleksey.com.gpg -O gpg.key && \
+    wget https://github.com/lsh123/xmlsec/releases/download/${XMLSEC_VERSION}/xmlsec1-${XMLSEC_VERSION}.tar.gz -O xmlsec.tgz && \
+    wget https://github.com/lsh123/xmlsec/releases/download/${XMLSEC_VERSION}/xmlsec1-${XMLSEC_VERSION}.sig -O xmlsec.sig && \
+    gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 00FDD6A7DFB81C88F34B9BF0E63ECDEF9E1D829E && \
     # Verify xmlsec1 source
-    GNUPGHOME="$(mktemp -d)" && export GNUPGHOME && \
-    gpg --batch --import gpg.key && \
     gpg --batch --verify xmlsec.sig xmlsec.tgz && \
     gpgconf --kill all && \
     rm -rf "$GNUPGHOME" xmlsec.sig && \
