@@ -11,14 +11,14 @@ RUN pip install --no-cache cffi && \
     apt-get install -y --no-install-recommends \
         build-essential libffi-dev \
         # Required for cryptography
-        rustc cargo pkg-config \
+        curl pkg-config \
         # Required for lxml
         libxslt-dev zlib1g-dev \
         # Required for xmlsec
         libltdl-dev && \
-    pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: -r /build/requirements.txt && \
-    apt-get remove --purge -y rustc cargo pkg-config build-essential && \
-    apt-get autoremove --purge -y
+    curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    . "$HOME/.cargo/env" && \
+    pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: -r /build/requirements.txt
 
 FROM ${BUILD_IMAGE}
 
