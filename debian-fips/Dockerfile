@@ -1,4 +1,4 @@
-ARG DEBIAN_CODENAME
+ARG DEBIAN_CODENAME=bookworm
 
 FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim AS equivs-builder
 
@@ -67,6 +67,6 @@ RUN mkdir -p $build_root && \
     echo "\n[algorithm_sect]\ndefault_properties = fips=yes" >> /usr/local/ssl/openssl.cnf
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends ca-certificates && \
+    apt-get install -y --no-install-recommends ca-certificates wget && \
     rm -rf /var/lib/apt/lists/*
 ENV SSL_CERT_DIR=/etc/ssl/certs
