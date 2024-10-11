@@ -1,11 +1,10 @@
-ARG BUILD_IMAGE
+ARG BUILD_IMAGE=ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
 
 FROM ${BUILD_IMAGE}
 
 ARG XMLSEC_VERSION
 
 ENV build_root="/build"
-ENV xmlsec_gpg_key="00FDD6A7DFB81C88F34B9BF0E63ECDEF9E1D829E"
 
 RUN mkdir -p ${build_root} && \
     cd ${build_root} && \
