@@ -15,7 +15,7 @@ permissions:
 jobs:
   debian-fips:
     name: debian-fips
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/build-target
@@ -27,7 +27,7 @@ jobs:
     needs:
       - debian-fips
     name: xmlsec1-fips
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/build-target
@@ -39,7 +39,7 @@ jobs:
     needs:
       - xmlsec1-fips
     name: python-fips
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/build-target
@@ -51,7 +51,7 @@ jobs:
     needs:
       - python-fips
     name: python-fips-full
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/build-target
