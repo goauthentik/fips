@@ -3,9 +3,13 @@
 
 DOCKER_BUILDX_FLAGS =
 
+PWD = $(shell pwd)
+
 IMAGE_REPO = ghcr.io/goauthentik
 IMAGE_PREFIX = fips
 IMAGE_SUFFIX =
+
+COMMIT = $(shell git --git-dir ${PWD}/.git rev-parse --short HEAD)
 
 DEBIAN_CODENAME = bookworm
 # https://www.openssl.org/source/
@@ -13,6 +17,7 @@ OPENSSL_VERSION = 3.0.9
 OPENSSL_VERSION_SUFFIX = ak-fips
 # https://www.python.org/doc/versions/
 PYTHON_VERSION = 3.13.0
+PYTHON_VERSION_TAG = ak-fips-${COMMIT}
 # https://www.aleksey.com/xmlsec/
 XMLSEC_VERSION = 1.3.5
 
@@ -42,7 +47,8 @@ python-fips: ## Build python on top of fips OpenSSL with xmlsec1
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}" \
-		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}"
+		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
+		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
 
 test:
 	# Test that base images has OpenSSL with FIPS enabled
