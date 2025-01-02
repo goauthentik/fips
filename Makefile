@@ -16,10 +16,10 @@ DEBIAN_CODENAME = bookworm
 OPENSSL_VERSION = 3.0.9
 OPENSSL_VERSION_SUFFIX = ak-fips
 # https://www.python.org/doc/versions/
-PYTHON_VERSION = 3.12.7
+PYTHON_VERSION = 3.12.8
 PYTHON_VERSION_TAG = ak-fips-${COMMIT}
 # https://www.aleksey.com/xmlsec/
-XMLSEC_VERSION = 1.3.5
+XMLSEC_VERSION = 1.3.6
 
 all: debian-fips xmlsec1-fips python-fips python-fips-full
 
