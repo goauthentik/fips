@@ -18,7 +18,7 @@ RUN pip install --no-cache cffi && \
         libltdl-dev && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y && \
     . "$HOME/.cargo/env" && \
-    pip wheel -w ${wheel_output_dir} --no-cache --no-binary :all: -r /build/requirements.txt
+    pip wheel -vvv -w ${wheel_output_dir} --no-cache --no-binary :all: -r /build/requirements.txt
 
 FROM ${BUILD_IMAGE}
 
