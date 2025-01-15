@@ -9,6 +9,7 @@ ENV build_root="/build"
 RUN mkdir -p ${build_root} && \
     cd ${build_root} && \
     apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
         # Required to fetch
         wget gnupg \
@@ -34,5 +35,6 @@ RUN mkdir -p ${build_root} && \
     make install && \
     apt-get remove --purge -y wget gnupg build-essential libxml2-dev libltdl-dev && \
     apt-get autoremove --purge -y && \
+    apt-get clean && \
     rm -rf ${build_root} && \
     rm -rf /var/lib/apt/lists/*

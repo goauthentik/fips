@@ -25,6 +25,8 @@ FROM ${BUILD_IMAGE}
 COPY --from=build /wheels /wheels
 
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends libltdl7 libxslt1.1 && \
     pip install /wheels/* && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
