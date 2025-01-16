@@ -67,6 +67,8 @@ RUN mkdir -p $build_root && \
     echo "\n[algorithm_sect]\ndefault_properties = fips=yes" >> /usr/local/ssl/openssl.cnf
 
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends ca-certificates wget && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 ENV SSL_CERT_DIR=/etc/ssl/certs
