@@ -8,11 +8,3 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "ci:"
-  - package-ecosystem: pip
-    directory: "/python-fips-full"
-    schedule:
-      interval: daily
-      time: "04:00"
-    open-pull-requests-limit: 10
-    commit-message:
-      prefix: "core:"

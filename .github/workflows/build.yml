@@ -47,15 +47,3 @@ jobs:
           target: python-fips
           container_token: ${{ secrets.GITHUB_TOKEN }}
           image_suffix: "${{ github.event_name != 'pull_request' && github.event.number || '' }}"
-  python-fips-full:
-    needs:
-      - python-fips
-    name: python-fips-full
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/build-target
-        with:
-          target: python-fips-full
-          container_token: ${{ secrets.GITHUB_TOKEN }}
-          image_suffix: "${{ github.event_name != 'pull_request' && github.event.number || '' }}"
