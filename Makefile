@@ -1,4 +1,4 @@
-.PHONY: all push test debian-fips python-fips xmlsec1-fips python-fips-full
+.PHONY: all push test debian-fips python-fips xmlsec1-fips
 .SHELLFLAGS += ${SHELLFLAGS} -e
 
 DOCKER_BUILDX_FLAGS =
@@ -16,7 +16,7 @@ PYTHON_VERSION = 3.13.0
 # https://www.aleksey.com/xmlsec/
 XMLSEC_VERSION = 1.3.5
 
-all: debian-fips xmlsec1-fips python-fips python-fips-full
+all: debian-fips xmlsec1-fips python-fips
 
 help:  ## Show this help
 	@echo "\nSpecify a command. The choices are:\n"
@@ -44,12 +44,6 @@ python-fips: ## Build python on top of fips OpenSSL with xmlsec1
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}" \
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}"
 
-python-fips-full: ## Build 'final' image which includes cryptography and xmlsec
-	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
-		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-full${IMAGE_SUFFIX} \
-		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}" \
-		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}"
-
 test:
 	# Test that base images has OpenSSL with FIPS enabled
 	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} \
@@ -63,9 +57,3 @@ test:
 	# Test Python imported version
 	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
 		bash -c 'python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)" | grep ${OPENSSL_VERSION_SUFFIX}'
-	# Test cryptography (enable FIPS)
-	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-full${IMAGE_SUFFIX} \
-		python -c "from cryptography.hazmat.backends.openssl.backend import backend; backend._enable_fips(); print(backend._fips_enabled)"
-	# Test LXML & xmlsec
-	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips-full${IMAGE_SUFFIX} \
-		python -c "import xmlsec; from lxml import etree; print(xmlsec.get_libxml_version(), xmlsec.get_libxmlsec_version(), etree.LIBXML_COMPILED_VERSION)"

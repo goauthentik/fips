@@ -15,7 +15,3 @@ Built on top of `debian-fips`, with xmlsec1 built and installed.
 ### `python-fips`
 
 Built on top of `xmlsec1-fips`, with Python 3.12.3 built.
-
-### `python-fips-full`
-
-Built on top of `python-fips` with dependencies like Cryptography and xmlsec built.
