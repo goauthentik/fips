@@ -9,6 +9,7 @@ ARG BUILD_IMAGE
 FROM ${BUILD_IMAGE}
 
 ARG PYTHON_VERSION
+ARG PYTHON_VERSION_TAG
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -79,6 +80,8 @@ RUN set -eux; \
 		--with-system-expat \
 		--without-ensurepip \
 	; \
+	sed -i 's/^GITTAG=.*/GITTAG=echo ${PYTHON_VERSION_TAG}/g' Makefile; \
+	sed -i 's/^GITBRANCH=.*/GITBRANCH=echo ${PYTHON_VERSION_TAG}/g' Makefile; \
 	nproc="$(nproc)"; \
 	EXTRA_CFLAGS="$(dpkg-buildflags --get CFLAGS)"; \
 	LDFLAGS="$(dpkg-buildflags --get LDFLAGS)"; \
