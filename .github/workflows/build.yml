@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [main, build-*]
+    branches: [main]
   pull_request:
     branches: [main]
   schedule:
@@ -38,6 +38,11 @@ jobs:
   python-fips:
     needs:
       - xmlsec1-fips
+    strategy:
+      matrix:
+        version:
+          - 3.12.8
+          - 3.13.2
     name: python-fips
     runs-on: ubuntu-latest
     steps:
@@ -47,3 +52,4 @@ jobs:
           target: python-fips
           container_token: ${{ secrets.GITHUB_TOKEN }}
           image_suffix: "${{ github.event_name != 'pull_request' && github.event.number || '' }}"
+          variables: PYTHON_VERSION=${{ matrix.version }}

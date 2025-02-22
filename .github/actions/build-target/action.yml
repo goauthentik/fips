@@ -17,6 +17,9 @@ inputs:
   image_suffix:
     description: Image suffix
     default: ""
+  variables:
+    description: Extra args for Make
+    default:  ""
 
 runs:
   using: "composite"
@@ -37,4 +40,4 @@ runs:
         make \
           DOCKER_BUILDX_FLAGS="--platform ${{ inputs.platforms }} ${{ inputs.extra_args }}" \
           IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
-          ${{ inputs.target }}
+          ${{ inputs.variables }} ${{ inputs.target }}
