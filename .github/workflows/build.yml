@@ -42,7 +42,7 @@ jobs:
       matrix:
         version:
           - 3.12.10
-          - 3.13.2
+          - 3.13.3
     name: python-fips
     runs-on: ubuntu-latest
     steps:
