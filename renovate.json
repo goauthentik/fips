@@ -7,7 +7,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "build.yml"
+        ".github/workflows/build.yml"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
