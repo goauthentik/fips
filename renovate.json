@@ -2,5 +2,32 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "build.yml"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "\"?(?<currentValue>3(?<minor>\\d+))\" # renovate: (?<packageName>.*)"
+      ],
+      "autoReplaceStringTemplate": "\"{{{ newValue }}}\" # renovate: (?<packageName>.*)",
+      "currentValueTemplate": "3.{{{minor}}}.{{{patch}}}",
+      "datasourceTemplate": "python-version",
+      "versioningTemplate": "python",
+      "depNameTemplate": "python"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "patch"
+      ],
+      "matchPackageNames": [
+        "python-*"
+      ]
+    }
   ]
 }
