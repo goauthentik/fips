@@ -41,7 +41,7 @@ jobs:
     strategy:
       matrix:
         version:
-          - "3.12.10" # renovate: python
+          - "3.13.3" # renovate: python
           - "3.13.3" # renovate: python
     name: python-fips
     runs-on: ubuntu-latest
