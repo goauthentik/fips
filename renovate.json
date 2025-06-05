@@ -22,6 +22,15 @@
   "packageRules": [
     {
       "matchUpdateTypes": [
+        "minor"
+      ],
+      "matchDepNames": [
+        "python"
+      ],
+      "enabled": false
+    },
+    {
+      "matchUpdateTypes": [
         "patch"
       ],
       "matchDepNames": [
