@@ -7,14 +7,13 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "build.yml"
+        ".github/workflows/build.yml"
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "\"?(?<currentValue>3(?<minor>\\d+))\" # renovate: (?<packageName>.*)"
+        "\"(?<currentValue>.*)\" # renovate"
       ],
-      "autoReplaceStringTemplate": "\"{{{ newValue }}}\" # renovate: (?<packageName>.*)",
-      "currentValueTemplate": "3.{{{minor}}}.{{{patch}}}",
+      "autoReplaceStringTemplate": "\"{{{ newValue }}}\" # renovate",
       "datasourceTemplate": "python-version",
       "versioningTemplate": "python",
       "depNameTemplate": "python"
@@ -25,8 +24,8 @@
       "matchUpdateTypes": [
         "patch"
       ],
-      "matchPackageNames": [
-        "python-*"
+      "matchDepNames": [
+        "python"
       ]
     }
   ]
