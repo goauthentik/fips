@@ -42,7 +42,7 @@ jobs:
       matrix:
         version:
           - "3.12.11" # renovate: python
-          - "3.13.4" # renovate: python
+          - "3.13.5" # renovate: python
     name: python-fips
     runs-on: ubuntu-latest
     steps:
