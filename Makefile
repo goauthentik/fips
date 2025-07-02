@@ -13,7 +13,7 @@ COMMIT = $(shell git --git-dir ${PWD}/.git rev-parse --short HEAD)
 
 DEBIAN_CODENAME = bookworm
 # https://www.openssl.org/source/
-OPENSSL_VERSION = 3.0.9
+OPENSSL_VERSION = 3.1.2
 OPENSSL_VERSION_SUFFIX = ak-fips
 # https://www.python.org/doc/versions/
 PYTHON_VERSION = 3.13.0
