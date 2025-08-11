@@ -17,7 +17,7 @@ jobs:
     name: debian-fips
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/build-target
         with:
           target: debian-fips
@@ -29,7 +29,7 @@ jobs:
     name: xmlsec1-fips
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/build-target
         with:
           target: xmlsec1-fips
@@ -46,7 +46,7 @@ jobs:
     name: python-fips
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: ./.github/actions/build-target
         with:
           target: python-fips
