@@ -1,4 +1,4 @@
-ARG DEBIAN_CODENAME=bookworm
+ARG DEBIAN_CODENAME=trixie
 
 FROM docker.io/library/debian:${DEBIAN_CODENAME}-slim AS equivs-builder
 
@@ -8,13 +8,13 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends equivs && \
     mkdir -p ${build_root} ${build_root}/output
 
-# libssl3
+# libssl3t64
 RUN cd ${build_root} && \
     rm -f *deb && \
-    apt download libssl3 && \
-    dpkg -e *deb libssl3/ && \
+    apt download libssl3t64 && \
+    dpkg -e *deb libssl3t64/ && \
     cd ${build_root}/output && \
-    equivs-build ../libssl3/control
+    equivs-build ../libssl3t64/control
 # openssl
 RUN cd ${build_root} && \
     rm -f *deb && \
@@ -59,7 +59,7 @@ RUN mkdir -p $build_root && \
     apt-get autoremove --purge -y && \
     rm -rf /var/lib/apt/lists/* && \
     dpkg -i ${build_root}/fake-deb/*deb && \
-    apt-mark hold libssl-dev libssl3 openssl && \
+    apt-mark hold libssl-dev libssl3t64 openssl && \
     rm -rf ${build_root} && \
     ln -s /usr/local/bin/openssl /usr/bin/openssl && \
     # https://stackoverflow.com/questions/76049736/ee-certificate-key-too-weak-error-in-openssl-3-1-0-fips-enabled

@@ -11,7 +11,7 @@ IMAGE_SUFFIX =
 
 COMMIT = $(shell git --git-dir ${PWD}/.git rev-parse --short HEAD)
 
-DEBIAN_CODENAME = bookworm
+DEBIAN_CODENAME = trixie
 # https://www.openssl.org/source/
 OPENSSL_VERSION = 3.1.2
 OPENSSL_VERSION_SUFFIX = ak-fips

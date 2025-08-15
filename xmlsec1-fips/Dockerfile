@@ -1,4 +1,4 @@
-ARG BUILD_IMAGE=ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
+ARG BUILD_IMAGE=ghcr.io/goauthentik/fips-debian:trixie-slim-fips
 
 FROM ${BUILD_IMAGE}
 
