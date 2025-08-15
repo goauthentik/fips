@@ -53,3 +53,43 @@ jobs:
           container_token: ${{ secrets.GITHUB_TOKEN }}
           image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
           variables: PYTHON_VERSION=${{ matrix.version }}
+  ubi-fips:
+    name: ubi-fips
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/build-target
+        with:
+          target: ubi-fips
+          container_token: ${{ secrets.GITHUB_TOKEN }}
+          image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
+  ubi-xmlsec-fips:
+    needs:
+      - ubi-fips
+    name: ubi-xmlsec-fips
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/build-target
+        with:
+          target: ubi-xmlsec-fips
+          container_token: ${{ secrets.GITHUB_TOKEN }}
+          image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
+  ubi-python-fips:
+    needs:
+      - ubi-xmlsec-fips
+    strategy:
+      matrix:
+        version:
+          - "3.12.11" # renovate: python
+          - "3.13.6" # renovate: python
+    name: ubi-python-fips
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: ./.github/actions/build-target
+        with:
+          target: ubi-python-fips
+          container_token: ${{ secrets.GITHUB_TOKEN }}
+          image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
+          variables: PYTHON_VERSION=${{ matrix.version }}
