@@ -90,11 +90,9 @@ RUN set -eux; \
 	&& microdnf clean all && rm -rf /var/cache/dnf
 
 # Copy Python from builder
-COPY --from=builder /usr/local/bin/python3* /usr/local/bin/
-COPY --from=builder /usr/local/lib/python3* /usr/local/lib/
-COPY --from=builder /usr/local/lib/libpython*.so* /usr/local/lib/
-COPY --from=builder /usr/local/lib/pkgconfig/python*.pc /usr/local/lib/pkgconfig/
-COPY --from=builder /usr/local/include/python3* /usr/local/include/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+COPY --from=builder /usr/local/lib/ /usr/local/lib/
+COPY --from=builder /usr/local/include/ /usr/local/include/
 
 # Set up environment
 ENV PATH="/usr/local/bin:${PATH}"
