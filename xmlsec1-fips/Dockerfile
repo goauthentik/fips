@@ -9,7 +9,7 @@ ENV build_root="/build"
 RUN mkdir -p ${build_root} && \
     cd ${build_root} && \
     apt-get update && \
-    apt-get upgrade -y && \
+    apt-get dist-upgrade -y && \
     apt-get install -y --no-install-recommends \
         # Required to fetch
         wget gnupg \
