@@ -12,8 +12,9 @@ IMAGE_SUFFIX =
 COMMIT = $(shell git --git-dir ${PWD}/.git rev-parse --short HEAD)
 
 DEBIAN_CODENAME = trixie
+# This version refers to the debian package version
+OPENSSL_VERSION = 3.5.1
 # https://openssl-library.org/source/
-OPENSSL_VERSION = 3.5
 OPENSSL_FIPS_MODULE_VERSION = 3.1.2
 OPENSSL_VERSION_SUFFIX = ak-fips
 # https://www.python.org/doc/versions/
