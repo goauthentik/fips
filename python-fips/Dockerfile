@@ -1,3 +1,5 @@
+# Based on https://github.com/docker-library/python/blob/master/3.13/slim-trixie/Dockerfile
+
 ARG BUILD_IMAGE
 
 #
