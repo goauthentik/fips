@@ -12,8 +12,9 @@ IMAGE_SUFFIX =
 COMMIT = $(shell git --git-dir ${PWD}/.git rev-parse --short HEAD)
 
 DEBIAN_CODENAME = trixie
-# https://www.openssl.org/source/
-OPENSSL_VERSION = 3.1.2
+# https://openssl-library.org/source/
+OPENSSL_VERSION = 3.5
+OPENSSL_FIPS_MODULE_VERSION = 3.1.2
 OPENSSL_VERSION_SUFFIX = ak-fips
 # https://www.python.org/doc/versions/
 PYTHON_VERSION = 3.13.7
@@ -35,6 +36,7 @@ debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}" \
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
+		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
 
 xmlsec1-fips: ## Build image with xmlsec1 (on top of debian)
