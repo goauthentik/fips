@@ -4,9 +4,8 @@ FROM ${BUILD_IMAGE}
 
 ARG XMLSEC_VERSION
 
-ENV build_root="/build"
-
-RUN mkdir -p ${build_root} && \
+RUN build_root="/build" && \
+    mkdir -p ${build_root} && \
     cd ${build_root} && \
     apt-get update && \
     apt-get upgrade -y && \
