@@ -9,6 +9,8 @@ cp /output-fips/fips.so ${fips_module_path}
 
 openssl fipsinstall -out /etc/ssl/fipsmodule.cnf -module ${fips_module_path}
 
+apt-get install -y --no-install-recommends patch
+
 patch -b /etc/ssl/openssl.cnf <<EOF
 51c51
 < # .include fipsmodule.cnf
@@ -27,6 +29,8 @@ patch -b /etc/ssl/openssl.cnf <<EOF
 > [algorithm_sect]
 > default_properties = fips=yes
 EOF
+
+apt-get remove --purge patch
 
 # Test that FIPS provider loads
 openssl list -providers -provider default -provider base -provider fips
