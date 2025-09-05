@@ -22,27 +22,27 @@ jobs:
     with:
       target_name: debian-fips
       image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
-  # xmlsec1-fips:
-  #   needs:
-  #     - debian-fips
-  #   name: xmlsec1-fips
-  #   uses: ./.github/workflows/_reusable-docker-build.yml
-  #   secrets: inherit
-  #   with:
-  #     target_name: xmlsec1-fips
-  #     image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
-  # python-fips:
-  #   needs:
-  #     - xmlsec1-fips
-  #   strategy:
-  #     matrix:
-  #       version:
-  #         - "3.12.11" # renovate: python
-  #         - "3.13.7" # renovate: python
-  #   name: python-fips
-  #   uses: ./.github/workflows/_reusable-docker-build.yml
-  #   secrets: inherit
-  #   with:
-  #     target_name: python-fips
-  #     image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
-  #     variables: PYTHON_VERSION=${{ matrix.version }}
+  xmlsec1-fips:
+    needs:
+      - debian-fips
+    name: xmlsec1-fips
+    uses: ./.github/workflows/_reusable-docker-build.yml
+    secrets: inherit
+    with:
+      target_name: xmlsec1-fips
+      image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
+  python-fips:
+    needs:
+      - xmlsec1-fips
+    strategy:
+      matrix:
+        version:
+          - "3.12.11" # renovate: python
+          - "3.13.7" # renovate: python
+    name: python-fips
+    uses: ./.github/workflows/_reusable-docker-build.yml
+    secrets: inherit
+    with:
+      target_name: python-fips
+      image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
+      variables: PYTHON_VERSION=${{ matrix.version }}

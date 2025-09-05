@@ -8,6 +8,7 @@ PWD = $(shell pwd)
 IMAGE_REPO = ghcr.io/goauthentik
 IMAGE_PREFIX = fips
 IMAGE_SUFFIX =
+ARCH =
 
 COMMIT = $(shell git --git-dir ${PWD}/.git rev-parse --short HEAD)
 
@@ -35,12 +36,12 @@ help:  ## Show this help
 	@echo ""
 
 debian-fips-ci:
-	@echo image=${IMAGE_REPO}/${IMAGE_PREFIX}-debian
-	@echo full=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}
+	@echo image=${IMAGE_REPO}/${IMAGE_PREFIX}-debian >> ${GITHUB_OUTPUT}
+	@echo full=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH} >> ${GITHUB_OUTPUT}
 
 debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
-		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} \
+		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH} \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}" \
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
 		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
@@ -49,18 +50,32 @@ ifdef GITHUB_OUTPUT
 	echo "digest=$(shell docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
 endif
 
+xmlsec1-fips-ci:
+	@echo image=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1 >> ${GITHUB_OUTPUT}
+	@echo full=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} >> ${GITHUB_OUTPUT}
+
 xmlsec1-fips: ## Build image with xmlsec1 (on top of debian)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
-		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
+		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}" \
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
+ifdef GITHUB_OUTPUT
+	echo "digest=$(shell docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+endif
+
+python-fips-ci:
+	@echo image=${IMAGE_REPO}/${IMAGE_PREFIX}-fips >> ${GITHUB_OUTPUT}
+	@echo full=${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} >> ${GITHUB_OUTPUT}
 
 python-fips: ## Build python on top of fips OpenSSL with xmlsec1
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
-		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
+		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}" \
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
 		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
+ifdef GITHUB_OUTPUT
+	echo "digest=$(shell docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+endif
 
 test:
 	@echo "Test that base images has OpenSSL with FIPS enabled"

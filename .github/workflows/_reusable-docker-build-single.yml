@@ -68,5 +68,6 @@ jobs:
           docker buildx install
           make \
             DOCKER_BUILDX_FLAGS="--platform ${{ inputs.image_arch }} ${{ inputs.extra_args }} --cache-from type=gha --cache-to type=gha,mode=max" \
-            IMAGE_SUFFIX="-${{ inputs.image_arch }}${{ inputs.image_suffix }}" \
+            IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
+            ARCH="${{ inputs.image_arch }}" \
             ${{ inputs.variables }} ${{ inputs.target_name }}
