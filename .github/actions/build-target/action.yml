@@ -38,6 +38,6 @@ runs:
         docker buildx inspect --bootstrap
         docker buildx install
         make \
-          DOCKER_BUILDX_FLAGS="--platform ${{ inputs.platforms }} ${{ inputs.extra_args }}" \
+          DOCKER_BUILDX_FLAGS="--platform ${{ inputs.platforms }} ${{ inputs.extra_args }} --cache-from type=gha --cache-to type=gha,mode=max" \
           IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
           ${{ inputs.variables }} ${{ inputs.target }}
