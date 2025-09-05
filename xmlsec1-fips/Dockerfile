@@ -4,6 +4,6 @@ FROM ${BUILD_IMAGE}
 
 ARG XMLSEC_VERSION
 
-RUN --mount=type=bind,target=/build/scripts,src=./build \
-    cd /build/scripts && \
+RUN --mount=type=bind,target=/scripts,src=./build \
+    cd /scripts && \
     ./xmlsec.sh

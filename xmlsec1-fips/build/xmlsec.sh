@@ -1,18 +1,16 @@
 #!/bin/bash
+set -e -u -o pipefail
 
 build_root="/build"
+build_deps="wget gnupg build-essential libxml2-dev libltdl-dev"
+
 mkdir -p ${build_root}
 cd ${build_root}
 
 apt-get update
 apt-get upgrade -y
-apt-get install -y --no-install-recommends \
-    # Required to fetch
-    wget gnupg \
-    # Required to run
-    libxml2 \
-    # Required to build
-    build-essential libxml2-dev libltdl-dev
+apt-get install -y --no-install-recommends ${build_deps} libxml2
+
 wget https://github.com/lsh123/xmlsec/releases/download/${XMLSEC_VERSION}/xmlsec1-${XMLSEC_VERSION}.tar.gz -O xmlsec.tgz
 wget https://github.com/lsh123/xmlsec/releases/download/${XMLSEC_VERSION}/xmlsec1-${XMLSEC_VERSION}.sig -O xmlsec.sig
 
@@ -34,7 +32,7 @@ cd build
 make -j $(nproc)
 make check
 make install
-apt-get remove --purge -y wget gnupg build-essential libxml2-dev libltdl-dev
+apt-get remove --purge -y ${build_deps}
 apt-get autoremove --purge -y
 apt-get clean
 cd
