@@ -34,7 +34,11 @@ runs:
     - shell: bash
       run: |
         set -xe
-        docker buildx create --use --platform=${{ inputs.platforms }} --name multi-platform-builder
+        docker buildx create \
+          --use \
+          --platform=${{ inputs.platforms }} \
+          --name multi-platform-builder \
+          --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=50000000
         docker buildx inspect --bootstrap
         docker buildx install
         make \
