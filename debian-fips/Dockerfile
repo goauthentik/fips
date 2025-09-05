@@ -43,5 +43,3 @@ RUN --mount=type=bind,target=/output,from=builder-openssl,src=/output \
     apt-get install -y --no-install-recommends ca-certificates wget && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-ENV SSL_CERT_DIR=/etc/ssl/certs
