@@ -15,11 +15,17 @@ apt-get install -y --no-install-recommends \
     build-essential libxml2-dev libltdl-dev
 wget https://github.com/lsh123/xmlsec/releases/download/${XMLSEC_VERSION}/xmlsec1-${XMLSEC_VERSION}.tar.gz -O xmlsec.tgz
 wget https://github.com/lsh123/xmlsec/releases/download/${XMLSEC_VERSION}/xmlsec1-${XMLSEC_VERSION}.sig -O xmlsec.sig
+
+# Validate signature
+GNUPGHOME="$(mktemp -d)"
+export GNUPGHOME
 gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys 00FDD6A7DFB81C88F34B9BF0E63ECDEF9E1D829E
 # Verify xmlsec1 source
 gpg --batch --verify xmlsec.sig xmlsec.tgz
 gpgconf --kill all
 rm -rf "$GNUPGHOME" xmlsec.sig
+
+# Start building
 tar xvzf xmlsec.tgz
 cd xmlsec1-${XMLSEC_VERSION}
 mkdir build
