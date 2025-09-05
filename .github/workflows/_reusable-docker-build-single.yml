@@ -55,6 +55,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: crazy-max/ghaction-github-runtime@v3
       - id: build
         run: |
           set -xe
@@ -66,7 +67,7 @@ jobs:
           docker buildx inspect --bootstrap
           docker buildx install
           make \
-            DOCKER_BUILDX_FLAGS="--platform ${{ inputs.image_arch }} ${{ inputs.extra_args }} --cache-from type=gha --cache-to type=gha,mode=max" \
+            DOCKER_BUILDX_FLAGS="--platform ${{ inputs.image_arch }} ${{ inputs.extra_args }} --cache-from type=gha,ghtoken=${{ secrets.GITHUB_TOKEN }} --cache-to type=gha,mode=max,ghtoken=${{ secrets.GITHUB_TOKEN }}" \
             IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
             ARCH="${{ inputs.image_arch }}" \
             ${{ inputs.variables }} ${{ inputs.target_name }}
