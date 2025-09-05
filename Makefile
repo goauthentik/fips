@@ -34,8 +34,9 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-debian-fips-name:
-	@echo ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}
+debian-fips-ci:
+	@echo image=${IMAGE_REPO}/${IMAGE_PREFIX}-debian
+	@echo full=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}
 
 debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
