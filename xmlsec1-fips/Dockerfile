@@ -36,4 +36,4 @@ RUN build_root="/build" && \
     apt-get autoremove --purge -y && \
     apt-get clean && \
     rm -rf ${build_root} && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get dist-clean
