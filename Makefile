@@ -45,9 +45,9 @@ debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
 		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
-	ifdef GITHUB_OUTPUT
-	echo "digest=$(docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
-	endif
+ifdef GITHUB_OUTPUT
+	echo "digest=$(shell docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+endif
 
 xmlsec1-fips: ## Build image with xmlsec1 (on top of debian)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
