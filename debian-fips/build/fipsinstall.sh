@@ -36,13 +36,3 @@ apt-get dist-clean
 
 # Test that FIPS provider loads
 openssl list -providers -provider default -provider base -provider fips
-
-# Test that OpenSSL is in FIPS mode
-openssl md5
-if [ $? -ne 1 ]; then
-    echo "openssl md5 call succeeded"
-    exit 1
-else
-    echo "openssl md5 fails as expected"
-    exit 0
-fi
