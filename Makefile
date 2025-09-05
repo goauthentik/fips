@@ -51,7 +51,8 @@ debian-fips: debian-fips-name ## Build base image (debian with fips-enabled Open
 		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
 ifdef GITHUB_OUTPUT
-	echo "digest=$(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+	$(eval digest := $(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST}))
+	echo "digest=${digest}" >> ${GITHUB_OUTPUT}
 endif
 
 xmlsec1-fips-name:
@@ -68,7 +69,8 @@ xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}" \
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
 ifdef GITHUB_OUTPUT
-	echo "digest=$(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+	$(eval digest := $(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST}))
+	echo "digest=${digest}" >> ${GITHUB_OUTPUT}
 endif
 
 python-fips-name:
@@ -86,7 +88,8 @@ python-fips: python-fips-name ## Build python on top of fips OpenSSL with xmlsec
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
 		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
 ifdef GITHUB_OUTPUT
-	echo "digest=$(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+	$(eval digest := $(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST}))
+	echo "digest=${digest}" >> ${GITHUB_OUTPUT}
 endif
 
 test:
