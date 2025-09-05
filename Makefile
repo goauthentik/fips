@@ -54,15 +54,15 @@ python-fips: ## Build python on top of fips OpenSSL with xmlsec1
 		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
 
 test:
-	# Test that base images has OpenSSL with FIPS enabled
-	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} \
-		bash -c "openssl version | grep ${OPENSSL_VERSION_SUFFIX}"
-	# Test xmlsec1 image
-	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
-		bash -c "openssl version | grep ${OPENSSL_VERSION_SUFFIX}"
-	# Test Python image
-	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
-		bash -c "openssl version | grep ${OPENSSL_VERSION_SUFFIX}"
-	# Test Python imported version
-	docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
-		bash -c 'python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)" | grep ${OPENSSL_VERSION_SUFFIX}'
+	@echo "Test that base images has OpenSSL with FIPS enabled"
+	@docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} \
+		openssl list -providers -provider default -provider base -provider fips
+	@echo "Test xmlsec1 image"
+	@docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
+		openssl list -providers -provider default -provider base -provider fips
+	@echo "Test Python image"
+	@docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
+		openssl list -providers -provider default -provider base -provider fips
+	@echo "Test Python imported version"
+	@docker run --rm ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX} \
+		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"

@@ -9,6 +9,6 @@ wget https://www.openssl.org/source/openssl-${OPENSSL_FIPS_MODULE_VERSION}.tar.g
 tar xvf openssl.tgz
 cd $build_root/openssl-${OPENSSL_FIPS_MODULE_VERSION}
 sed -i "s:BUILD_METADATA=:BUILD_METADATA=${OPENSSL_VERSION_SUFFIX}:" VERSION.dat
-./config fips
-make -j$(nproc) depend build_sw
+./Configure enable-fips
+make -j$(nproc)
 cp ./providers/fips.so ${output_root}
