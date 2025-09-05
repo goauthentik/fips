@@ -6,10 +6,12 @@ ARG OPENSSL_VERSION
 ARG OPENSSL_FIPS_MODULE_VERSION
 ARG OPENSSL_VERSION_SUFFIX
 
-RUN --mount=type=bind,target=/build/scripts,src=./build \
+RUN --mount=type=bind,target=/build/scripts/common.sh,src=./build/common.sh \
+    --mount=type=bind,target=/build/scripts/prepare.sh,src=./build/prepare.sh \
     cd /build/scripts && \
     ./prepare.sh
-RUN --mount=type=bind,target=/build/scripts,src=./build \
+RUN --mount=type=bind,target=/build/scripts/common.sh,src=./build/common.sh \
+    --mount=type=bind,target=/build/scripts/openssl.sh,src=./build/openssl.sh \
     cd /build/scripts && \
     ./openssl.sh
 
@@ -19,10 +21,12 @@ ARG OPENSSL_VERSION
 ARG OPENSSL_FIPS_MODULE_VERSION
 ARG OPENSSL_VERSION_SUFFIX
 
-RUN --mount=type=bind,target=/build/scripts,src=./build \
+RUN --mount=type=bind,target=/build/scripts/common.sh,src=./build/common.sh \
+    --mount=type=bind,target=/build/scripts/prepare.sh,src=./build/prepare.sh \
     cd /build/scripts && \
     ./prepare.sh
-RUN --mount=type=bind,target=/build/scripts,src=./build \
+RUN --mount=type=bind,target=/build/scripts/common.sh,src=./build/common.sh \
+    --mount=type=bind,target=/build/scripts/openssl-fips.sh,src=./build/openssl-fips.sh \
     cd /build/scripts && \
     ./openssl-fips.sh
 
