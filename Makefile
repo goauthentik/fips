@@ -35,6 +35,9 @@ help:  ## Show this help
 		sort
 	@echo ""
 
+digest:
+	echo "digest=$(shell docker inspect $(FULL_IMAGE_NAME) -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+
 debian-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian)
 	$(eval full := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH})
@@ -51,8 +54,7 @@ debian-fips: debian-fips-name ## Build base image (debian with fips-enabled Open
 		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
 ifdef GITHUB_OUTPUT
-	$(eval digest := $(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST}))
-	echo "digest=${digest}" >> ${GITHUB_OUTPUT}
+	$(MAKE) digest FULL_IMAGE_NAME=${full}
 endif
 
 xmlsec1-fips-name:
@@ -69,8 +71,7 @@ xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}" \
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
 ifdef GITHUB_OUTPUT
-	$(eval digest := $(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST}))
-	echo "digest=${digest}" >> ${GITHUB_OUTPUT}
+	$(MAKE) digest FULL_IMAGE_NAME=${full}
 endif
 
 python-fips-name:
@@ -88,8 +89,7 @@ python-fips: python-fips-name ## Build python on top of fips OpenSSL with xmlsec
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
 		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
 ifdef GITHUB_OUTPUT
-	$(eval digest := $(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST}))
-	echo "digest=${digest}" >> ${GITHUB_OUTPUT}
+	$(MAKE) digest FULL_IMAGE_NAME=${full}
 endif
 
 test:
