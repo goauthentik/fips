@@ -17,16 +17,11 @@ patch -b /etc/ssl/openssl.cnf <<EOF
 < # .include fipsmodule.cnf
 ---
 > .include /etc/ssl/fipsmodule.cnf
-54a55
-> alg_section = algorithm_sect
-61c62,63
+61c62
 < # fips = fips_sect
 ---
 > fips = fips_sect
-> base = base_sect
-73a76,79
-> [base_sect]
-> activate = 1
+73a76,77
 > [algorithm_sect]
 > default_properties = fips=yes
 EOF
