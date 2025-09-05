@@ -32,6 +32,7 @@ RUN --mount=type=bind,target=/output,from=builder-openssl,src=/output \
     --mount=type=bind,target=/output-fips,from=builder-openssl-fips,src=/output \
     --mount=type=bind,target=/build/fipsinstall.sh,src=./build/fipsinstall.sh \
     dpkg -i /output/libssl-dev_* /output/libssl3t64_* /output/openssl_* && \
+    apt-mark hold libssl-dev libssl3t64 openssl && \
     /build/fipsinstall.sh
 
 RUN apt-get update && \
