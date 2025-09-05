@@ -23,6 +23,8 @@ PYTHON_VERSION_TAG = ak-fips-${COMMIT}
 # https://www.aleksey.com/xmlsec/
 XMLSEC_VERSION = 1.3.7
 
+DOCKER_FORMAT_DIGEST = "{{ index .RepoDigests 0 }}"
+
 all: debian-fips xmlsec1-fips python-fips
 
 help:  ## Show this help
@@ -32,6 +34,9 @@ help:  ## Show this help
 		sort
 	@echo ""
 
+debian-fips-name:
+	@echo ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}
+
 debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
 		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} \
@@ -39,6 +44,9 @@ debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
 		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
+	ifdef GITHUB_OUTPUT
+	echo "digest=$(docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+	endif
 
 xmlsec1-fips: ## Build image with xmlsec1 (on top of debian)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
