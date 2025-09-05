@@ -31,7 +31,7 @@ patch -b /etc/ssl/openssl.cnf <<EOF
 > default_properties = fips=yes
 EOF
 
-apt-get remove --purge patch
+apt-get remove -y --purge patch
 apt-get dist-clean
 
 # Test that FIPS provider loads
