@@ -35,46 +35,58 @@ help:  ## Show this help
 		sort
 	@echo ""
 
-debian-fips-ci:
-	@echo image=${IMAGE_REPO}/${IMAGE_PREFIX}-debian >> ${GITHUB_OUTPUT}
-	@echo full=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH} >> ${GITHUB_OUTPUT}
+debian-fips-name:
+	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian)
+	$(eval full := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH})
+ifdef GITHUB_OUTPUT
+	echo image=$(image) >> ${GITHUB_OUTPUT}
+	echo full=$(full) >> ${GITHUB_OUTPUT}
+endif
 
-debian-fips: ## Build base image (debian with fips-enabled OpenSSL)
+debian-fips: debian-fips-name ## Build base image (debian with fips-enabled OpenSSL)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
-		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH} \
+		-t ${full} \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}" \
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
 		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
 ifdef GITHUB_OUTPUT
-	echo "digest=$(shell docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+	echo "digest=$(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
 endif
 
-xmlsec1-fips-ci:
-	@echo image=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1 >> ${GITHUB_OUTPUT}
-	@echo full=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} >> ${GITHUB_OUTPUT}
+xmlsec1-fips-name:
+	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1)
+	$(eval full := ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
+ifdef GITHUB_OUTPUT
+	echo image=$(image) >> ${GITHUB_OUTPUT}
+	echo full=$(full) >> ${GITHUB_OUTPUT}
+endif
 
-xmlsec1-fips: ## Build image with xmlsec1 (on top of debian)
+xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
-		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} \
+		-t ${full} \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}" \
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
 ifdef GITHUB_OUTPUT
-	echo "digest=$(shell docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+	echo "digest=$(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
 endif
 
-python-fips-ci:
-	@echo image=${IMAGE_REPO}/${IMAGE_PREFIX}-fips >> ${GITHUB_OUTPUT}
-	@echo full=${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} >> ${GITHUB_OUTPUT}
+python-fips-name:
+	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-fips)
+	$(eval full := ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
+ifdef GITHUB_OUTPUT
+	echo image=$(image) >> ${GITHUB_OUTPUT}
+	echo full=$(full) >> ${GITHUB_OUTPUT}
+endif
 
-python-fips: ## Build python on top of fips OpenSSL with xmlsec1
+python-fips: python-fips-name ## Build python on top of fips OpenSSL with xmlsec1
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
-		-t ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} \
+		-t ${full} \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}" \
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
 		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
 ifdef GITHUB_OUTPUT
-	echo "digest=$(shell docker inspect ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+	echo "digest=$(shell docker inspect ${full} -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
 endif
 
 test:

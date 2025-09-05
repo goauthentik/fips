@@ -54,7 +54,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - id: name
         run: |
-          make ${{ inputs.target_name }}-ci
+          make ${{ inputs.target_name }}-name
       - uses: int128/docker-manifest-create-action@v2
         id: build
         with:
