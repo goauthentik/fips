@@ -24,8 +24,6 @@ PYTHON_VERSION_TAG = ak-fips-${COMMIT}
 # https://www.aleksey.com/xmlsec/
 XMLSEC_VERSION = 1.3.7
 
-DOCKER_FORMAT_DIGEST = "{{ index .RepoDigests 0 }}"
-
 all: debian-fips xmlsec1-fips python-fips
 
 help:  ## Show this help
@@ -34,12 +32,6 @@ help:  ## Show this help
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-$(HELP_WIDTH)s  \033[m %s\n", $$1, $$2}' | \
 		sort
 	@echo ""
-
-digest:
-	docker pull ${FULL_IMAGE_NAME}
-	docker inspect $(FULL_IMAGE_NAME)
-	$(eval digest := $(shell docker inspect $(FULL_IMAGE_NAME) -f ${DOCKER_FORMAT_DIGEST}))
-	echo "digest=${digest}" >> ${GITHUB_OUTPUT}
 
 debian-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian)
@@ -56,9 +48,6 @@ debian-fips: debian-fips-name ## Build base image (debian with fips-enabled Open
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
 		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
-ifdef GITHUB_OUTPUT
-	$(MAKE) digest FULL_IMAGE_NAME=${full}
-endif
 
 xmlsec1-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1)
@@ -73,9 +62,6 @@ xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 		-t ${full} \
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}" \
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
-ifdef GITHUB_OUTPUT
-	$(MAKE) digest FULL_IMAGE_NAME=${full}
-endif
 
 python-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-fips)
@@ -91,9 +77,6 @@ python-fips: python-fips-name ## Build python on top of fips OpenSSL with xmlsec
 		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}" \
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
 		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
-ifdef GITHUB_OUTPUT
-	$(MAKE) digest FULL_IMAGE_NAME=${full}
-endif
 
 test:
 	@echo "Test that base images has OpenSSL with FIPS enabled"

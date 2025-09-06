@@ -36,7 +36,7 @@ jobs:
     name: Build ${{ inputs.image_arch }}
     runs-on: ${{ inputs.runs-on }}
     outputs:
-      image-digest: ${{ steps.build.outputs.digest }}
+      image-digest: ${{ steps.digest.outputs.digest }}
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
@@ -76,3 +76,10 @@ jobs:
             IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
             ARCH="${{ inputs.image_arch }}" \
             ${{ inputs.variables }} ${{ inputs.target_name }}
+      - id: digest
+        env:
+          image: ${{ steps.build.outputs.full }}
+        run: |
+          docker pull $image
+          docker inspect $image
+          echo "digest=$(docker inspect $image -f '{{ index .RepoDigests 0 }}')" >> ${GITHUB_OUTPUT}
