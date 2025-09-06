@@ -36,8 +36,10 @@ help:  ## Show this help
 	@echo ""
 
 digest:
-	$(shell docker pull $(FULL_IMAGE_NAME))
-	echo "digest=$(shell docker inspect $(FULL_IMAGE_NAME) -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
+	docker pull ${FULL_IMAGE_NAME}
+	docker inspect $(FULL_IMAGE_NAME)
+	$(eval digest := $(shell docker inspect $(FULL_IMAGE_NAME) -f ${DOCKER_FORMAT_DIGEST}))
+	echo "digest=${digest}" >> ${GITHUB_OUTPUT}
 
 debian-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian)
