@@ -83,6 +83,8 @@ jobs:
       - id: name
         run: |
           make ${{ inputs.target_name }}-name IMAGE_SUFFIX="${{ inputs.image_suffix }}"
+          test_output=$(make ${{ inputs.target_name }}-test IMAGE_SUFFIX="${{ inputs.image_suffix }})
+          echo "test-output=${test_output}" >> $GITHUB_OUTPUT
       - uses: peter-evans/find-comment@v3
         id: fc
         with:
@@ -98,3 +100,9 @@ jobs:
             authentik FIPS Image build status - ${{ inputs.target_name }} (`${{ inputs.variables }}`)
 
             Image built: `${{ steps.name.outputs.full }}` for commit `${{ github.event.pull_request.head.sha }}`
+
+            Test output:
+
+            ```
+            ${{ steps.name.outputs.test-output }}
+            ```
