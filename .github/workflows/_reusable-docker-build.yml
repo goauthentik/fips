@@ -83,9 +83,8 @@ jobs:
       - id: name
         run: |
           make ${{ inputs.target_name }}-name IMAGE_SUFFIX="${{ inputs.image_suffix }}"
-          test_output=$(make ${{ inputs.target_name }}-test IMAGE_SUFFIX="${{ inputs.image_suffix }}")
           echo 'test-output<<EOF' >> $GITHUB_OUTPUT
-          echo -e ${test_output} >> $GITHUB_OUTPUT
+          make ${{ inputs.target_name }}-test IMAGE_SUFFIX="${{ inputs.image_suffix }}" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
       - uses: peter-evans/find-comment@v3
         id: fc
