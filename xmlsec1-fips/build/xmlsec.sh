@@ -3,13 +3,14 @@ set -e -u -o pipefail
 
 build_root="/build"
 build_deps="wget gnupg build-essential libxml2-dev libltdl-dev"
+runtime_deps="libltdl7 libxml2"
 
 mkdir -p ${build_root}
 cd ${build_root}
 
 apt-get update
 apt-get upgrade -y
-apt-get install -y --no-install-recommends ${build_deps} libxml2
+apt-get install -y --no-install-recommends ${build_deps} ${runtime_deps}
 
 wget https://github.com/lsh123/xmlsec/releases/download/${XMLSEC_VERSION}/xmlsec1-${XMLSEC_VERSION}.tar.gz -O xmlsec.tgz
 wget https://github.com/lsh123/xmlsec/releases/download/${XMLSEC_VERSION}/xmlsec1-${XMLSEC_VERSION}.sig -O xmlsec.sig
