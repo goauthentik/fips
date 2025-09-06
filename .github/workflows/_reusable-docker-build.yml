@@ -94,4 +94,4 @@ jobs:
           body: |
             authentik FIPS Image build status - ${{ inputs.target_name }}
 
-            Image built: `${{ steps.name.outputs.full }}`
+            Image built: `${{ steps.name.outputs.full }}` for commit `${{ github.event.pull_request.head.sha }}`
