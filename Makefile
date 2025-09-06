@@ -35,7 +35,7 @@ help:  ## Show this help
 
 debian-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian)
-	$(eval full := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH})
+	$(eval full := ${image}:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH})
 ifdef GITHUB_OUTPUT
 	echo image=$(image) >> ${GITHUB_OUTPUT}
 	echo full=$(full) >> ${GITHUB_OUTPUT}
@@ -51,7 +51,7 @@ debian-fips: debian-fips-name ## Build base image (debian with fips-enabled Open
 
 xmlsec1-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1)
-	$(eval full := ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
+	$(eval full := ${image}:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
 ifdef GITHUB_OUTPUT
 	echo image=$(image) >> ${GITHUB_OUTPUT}
 	echo full=$(full) >> ${GITHUB_OUTPUT}
@@ -64,8 +64,8 @@ xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
 
 python-fips-name:
-	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-fips)
-	$(eval full := ${IMAGE_REPO}/${IMAGE_PREFIX}-python:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
+	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-python)
+	$(eval full := ${image}:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
 ifdef GITHUB_OUTPUT
 	echo image=$(image) >> ${GITHUB_OUTPUT}
 	echo full=$(full) >> ${GITHUB_OUTPUT}
