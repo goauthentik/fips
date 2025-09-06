@@ -86,13 +86,13 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: "github-actions[bot]"
-          body-includes: ${{ inputs.target_name }}
+          body-includes: ${{ inputs.target_name }} (`${{ inputs.variables }}`)
       - uses: peter-evans/create-or-update-comment@v2
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           edit-mode: replace
           body: |
-            authentik FIPS Image build status - ${{ inputs.target_name }}
+            authentik FIPS Image build status - ${{ inputs.target_name }} (`${{ inputs.variables }}`)
 
             Image built: `${{ steps.name.outputs.full }}` for commit `${{ github.event.pull_request.head.sha }}`
