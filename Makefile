@@ -36,7 +36,7 @@ help:  ## Show this help
 	@echo ""
 
 digest:
-	docker pull $(FULL_IMAGE_NAME)
+	$(shell docker pull $(FULL_IMAGE_NAME))
 	echo "digest=$(shell docker inspect $(FULL_IMAGE_NAME) -f ${DOCKER_FORMAT_DIGEST})" >> ${GITHUB_OUTPUT}
 
 debian-fips-name:
