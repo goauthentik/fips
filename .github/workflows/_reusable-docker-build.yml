@@ -1,0 +1,98 @@
+---
+# Re-usable workflow for a multi-architecture build
+name: Reusable - Multi-arch container build
+
+on:
+  workflow_call:
+    inputs:
+      target_name:
+        required: true
+        type: string
+      registry_ghcr:
+        default: true
+        type: boolean
+      image_suffix:
+        default: ""
+        type: string
+      variables:
+        default: ""
+        type: string
+    outputs: {}
+
+jobs:
+  build-amd64:
+    uses: ./.github/workflows/_reusable-docker-build-single.yml
+    secrets: inherit
+    with:
+      target_name: ${{ inputs.target_name }}
+      image_suffix: ${{ inputs.image_suffix }}
+      image_arch: amd64
+      runs-on: ubuntu-24.04
+      registry_ghcr: ${{ inputs.registry_ghcr }}
+  build-arm64:
+    uses: ./.github/workflows/_reusable-docker-build-single.yml
+    secrets: inherit
+    with:
+      target_name: ${{ inputs.target_name }}
+      image_suffix: ${{ inputs.image_suffix }}
+      image_arch: arm64
+      runs-on: ubuntu-24.04-arm
+      registry_ghcr: ${{ inputs.registry_ghcr }}
+  merge:
+    runs-on: ubuntu-latest
+    needs:
+      - build-amd64
+      - build-arm64
+    steps:
+      - uses: actions/checkout@v5
+      - name: Login to GitHub Container Registry
+        if: ${{ inputs.registry_ghcr }}
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - id: name
+        run: |
+          make ${{ inputs.target_name }}-name IMAGE_SUFFIX="${{ inputs.image_suffix }}"
+      - uses: int128/docker-manifest-create-action@v2
+        id: build
+        with:
+          tags: ${{ steps.name.outputs.full }}
+          sources: |
+            ${{ needs.build-amd64.outputs.image-digest }}
+            ${{ needs.build-arm64.outputs.image-digest }}
+      - uses: actions/attest-build-provenance@v3
+        id: attest
+        with:
+          subject-name: ${{ steps.name.outputs.image }}
+          subject-digest: ${{ steps.build.outputs.digest }}
+          push-to-registry: true
+  pr-comment:
+    needs:
+      - merge
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    permissions:
+      # Needed to write comments on PRs
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+      - id: name
+        run: |
+          make ${{ inputs.target_name }}-name IMAGE_SUFFIX="${{ inputs.image_suffix }}"
+      - uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: ${{ inputs.target_name }} (`${{ inputs.variables }}`)
+      - uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            authentik FIPS Image build status - ${{ inputs.target_name }} (`${{ inputs.variables }}`)
+
+            Image built: `${{ steps.name.outputs.full }}` for commit `${{ github.event.pull_request.head.sha }}`
