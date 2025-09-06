@@ -68,3 +68,30 @@ jobs:
           subject-name: ${{ steps.name.outputs.image }}
           subject-digest: ${{ steps.build.outputs.digest }}
           push-to-registry: true
+  pr-comment:
+    needs:
+      - merge
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
+    permissions:
+      # Needed to write comments on PRs
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+      - id: name
+        run: |
+          make ${{ inputs.target_name }}-name IMAGE_SUFFIX="${{ inputs.image_suffix }}"
+      - uses: peter-evans/find-comment@v2
+        id: fc
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: ${{ inputs.target_name }}
+      - uses: peter-evans/create-or-update-comment@v2
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            authentik FIPS Image build status - ${{ inputs.target_name }}
+
+            Image built: `${{ steps.name.outputs.full }}`
