@@ -66,13 +66,14 @@ jobs:
             --driver-opt env.BUILDKIT_STEP_LOG_MAX_SIZE=50000000
           docker buildx inspect --bootstrap
           docker buildx install
+          cache_scope="${{ inputs.target_name }}-${{ inputs.image_arch }}-${{ inputs.variables }}"
           make \
             DOCKER_BUILDX_FLAGS="
               --platform ${{ inputs.image_arch }} \
               ${{ inputs.extra_args }} \
               --load \
-              --cache-from type=gha,ghtoken=${{ secrets.GITHUB_TOKEN }},scope=${{ inputs.target_name }}-${{ inputs.image_arch }} \
-              --cache-to type=gha,mode=max,ghtoken=${{ secrets.GITHUB_TOKEN }}",scope=${{ inputs.target_name }}-${{ inputs.image_arch }} \
+              --cache-from type=gha,ghtoken=${{ secrets.GITHUB_TOKEN }},scope=${cache_scope} \
+              --cache-to type=gha,mode=max,ghtoken=${{ secrets.GITHUB_TOKEN }}",scope=${cache_scope} \
             IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
             ARCH="${{ inputs.image_arch }}" \
             ${{ inputs.variables }} ${{ inputs.target_name }}
