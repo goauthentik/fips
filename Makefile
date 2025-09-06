@@ -37,8 +37,8 @@ debian-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian)
 	$(eval full := ${image}:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH})
 ifdef GITHUB_OUTPUT
-	echo image=$(image) >> ${GITHUB_OUTPUT}
-	echo full=$(full) >> ${GITHUB_OUTPUT}
+	@echo image=$(image) >> ${GITHUB_OUTPUT}
+	@echo full=$(full) >> ${GITHUB_OUTPUT}
 endif
 
 debian-fips: debian-fips-name ## Build base image (debian with fips-enabled OpenSSL)
@@ -51,18 +51,18 @@ debian-fips: debian-fips-name ## Build base image (debian with fips-enabled Open
 
 debian-fips-test: debian-fips-name
 	@echo "Debian version"
-	@docker run --rm ${full} \
+	docker run --rm ${full} \
 		cat /etc/debian_version
 	@echo "Test that base images has OpenSSL with FIPS enabled"
-	@docker run --rm ${full} \
+	docker run --rm ${full} \
 		openssl list -providers -provider default -provider base -provider fips
 
 xmlsec1-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1)
 	$(eval full := ${image}:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
 ifdef GITHUB_OUTPUT
-	echo image=$(image) >> ${GITHUB_OUTPUT}
-	echo full=$(full) >> ${GITHUB_OUTPUT}
+	@echo image=$(image) >> ${GITHUB_OUTPUT}
+	@echo full=$(full) >> ${GITHUB_OUTPUT}
 endif
 
 xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
@@ -73,18 +73,18 @@ xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 
 xmlsec1-fips-test: xmlsec1-fips-name
 	@echo "Test that base images has OpenSSL with FIPS enabled"
-	@docker run --rm ${full} \
+	docker run --rm ${full} \
 		openssl list -providers -provider default -provider base -provider fips
 	@echo "xmlsec1 version"
-	@docker run --rm ${full} \
+	docker run --rm ${full} \
 		xmlsec1 --version
 
 python-fips-name:
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-python)
 	$(eval full := ${image}:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
 ifdef GITHUB_OUTPUT
-	echo image=$(image) >> ${GITHUB_OUTPUT}
-	echo full=$(full) >> ${GITHUB_OUTPUT}
+	@echo image=$(image) >> ${GITHUB_OUTPUT}
+	@echo full=$(full) >> ${GITHUB_OUTPUT}
 endif
 
 python-fips: python-fips-name ## Build python on top of fips OpenSSL with xmlsec1
@@ -96,10 +96,10 @@ python-fips: python-fips-name ## Build python on top of fips OpenSSL with xmlsec
 
 python-fips-test: python-fips-name
 	@echo "Python version"
-	@docker run --rm ${full} \
+	docker run --rm ${full} \
 		python --version
 	@echo "Python SSL version"
-	@docker run --rm ${full} \
+	docker run --rm ${full} \
 		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"
 
 test: debian-fips-test xmlsec1-fips-test python-fips-test
