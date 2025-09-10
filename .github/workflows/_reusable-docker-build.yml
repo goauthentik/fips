@@ -85,7 +85,10 @@ jobs:
       - uses: actions/checkout@v5
       - id: name
         run: |
-          make ${{ inputs.target_name }}-name IMAGE_SUFFIX="${{ inputs.image_suffix }}"
+          make \
+            IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
+            ${{ inputs.variables }} \
+            ${{ inputs.target_name }}-name
           echo 'test-output<<EOF' >> $GITHUB_OUTPUT
           make ${{ inputs.target_name }}-test IMAGE_SUFFIX="${{ inputs.image_suffix }}" >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
