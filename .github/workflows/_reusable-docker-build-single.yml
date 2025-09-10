@@ -76,7 +76,8 @@ jobs:
               --cache-to type=gha,mode=max,ghtoken=${{ secrets.GITHUB_TOKEN }}",scope=${cache_scope} \
             IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
             ARCH="${{ inputs.image_arch }}" \
-            ${{ inputs.variables }} ${{ inputs.target_name }}
+            ${{ inputs.variables }} \
+            ${{ inputs.target_name }}
       - id: digest
         env:
           image: ${{ steps.build.outputs.full }}

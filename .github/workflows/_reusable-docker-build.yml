@@ -56,7 +56,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - id: name
         run: |
-          make ${{ inputs.target_name }}-name IMAGE_SUFFIX="${{ inputs.image_suffix }}"
+          make \
+            IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
+            ${{ inputs.variables }} \
+            ${{ inputs.target_name }}-name
       - uses: int128/docker-manifest-create-action@v2
         id: build
         with:
