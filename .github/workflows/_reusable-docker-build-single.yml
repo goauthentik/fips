@@ -87,8 +87,9 @@ jobs:
           docker pull $image
           docker inspect $image
           echo "digest=$(docker inspect $image -f '{{ index .RepoDigests 0 }}')" >> ${GITHUB_OUTPUT}
+          echo "raw_digest=$(docker inspect $image -f '{{ .ID }}')" >> ${GITHUB_OUTPUT}
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # actions/attest-build-provenance@v3
         with:
           subject-name: ${{ steps.build.outputs.image }}
-          subject-digest: sha256:${{ steps.digest.outputs.digest }}
+          subject-digest: ${{ steps.digest.outputs.raw_digest }}
           push-to-registry: true
