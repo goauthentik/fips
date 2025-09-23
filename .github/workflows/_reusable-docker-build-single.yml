@@ -72,7 +72,6 @@ jobs:
             DOCKER_BUILDX_FLAGS="
               --platform ${{ inputs.image_arch }} \
               ${{ inputs.extra_args }} \
-              --load \
               --attest type=provenance,builder-id=${run_url} \
               --attest type=sbom,disabled=false \
               --cache-from type=gha,ghtoken=${{ secrets.GITHUB_TOKEN }},scope=${cache_scope} \
