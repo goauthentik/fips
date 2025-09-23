@@ -36,7 +36,7 @@ jobs:
     name: Build ${{ inputs.image_arch }}
     runs-on: ${{ inputs.runs-on }}
     outputs:
-      image-digest: ${{ steps.digest.outputs.digest }}
+      image-digest: ${{ steps.digest.outputs.full_digest }}
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
@@ -86,10 +86,12 @@ jobs:
         run: |
           docker pull $image
           docker inspect $image
-          echo "digest=$(docker inspect $image -f '{{ index .RepoDigests 0 }}')" >> ${GITHUB_OUTPUT}
-          echo "raw_digest=$(docker inspect $image -f '{{ .ID }}')" >> ${GITHUB_OUTPUT}
+          full_digest=$(docker inspect $image -f "{{ index .RepoDigests 0 }}")
+          short_digest=$(echo $full_digest | sed 's/.*@//g')
+          echo "full_digest=${full_digest}" >> ${GITHUB_OUTPUT}
+          echo "short_digest=${short_digest}" >> ${GITHUB_OUTPUT}
       - uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # actions/attest-build-provenance@v3
         with:
           subject-name: ${{ steps.build.outputs.image }}
-          subject-digest: ${{ steps.digest.outputs.raw_digest }}
+          subject-digest: ${{ steps.digest.outputs.short_digest }}
           push-to-registry: true
