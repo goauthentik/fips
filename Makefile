@@ -50,10 +50,10 @@ debian-fips: debian-fips-name ## Build base image (debian with fips-enabled Open
 		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
 
 debian-fips-test: debian-fips-name
-	@echo "Debian version"
+	@echo "### Debian version ###"
 	docker run --rm ${full} \
 		cat /etc/debian_version
-	@echo "Test that base images has OpenSSL with FIPS enabled"
+	@echo "### Test that base images has OpenSSL with FIPS enabled ###"
 	docker run --rm ${full} \
 		openssl list -providers -provider default -provider base -provider fips
 
@@ -72,10 +72,10 @@ xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
 
 xmlsec1-fips-test: xmlsec1-fips-name
-	@echo "Test that base images has OpenSSL with FIPS enabled"
+	@echo "### Test that base images has OpenSSL with FIPS enabled ###"
 	docker run --rm ${full} \
 		openssl list -providers -provider default -provider base -provider fips
-	@echo "xmlsec1 version"
+	@echo "### xmlsec1 version ###"
 	docker run --rm ${full} \
 		xmlsec1 --version
 
@@ -95,10 +95,10 @@ python-fips: python-fips-name ## Build python on top of fips OpenSSL with xmlsec
 		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
 
 python-fips-test: python-fips-name
-	@echo "Python version"
+	@echo "### Python version ###"
 	docker run --rm ${full} \
 		python --version
-	@echo "Python SSL version"
+	@echo "### Python SSL version ###"
 	docker run --rm ${full} \
 		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"
 
