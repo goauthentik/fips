@@ -67,11 +67,14 @@ jobs:
           docker buildx inspect --bootstrap
           docker buildx install
           cache_scope="${{ inputs.target_name }}-${{ inputs.image_arch }}-${{ inputs.variables }}"
+          run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/attempts/${GITHUB_RUN_ATTEMPT}"
           make \
             DOCKER_BUILDX_FLAGS="
               --platform ${{ inputs.image_arch }} \
               ${{ inputs.extra_args }} \
               --load \
+              --attest type=provenance,builder-id=${run_url} \
+              --attest type=sbom,disabled=false \
               --cache-from type=gha,ghtoken=${{ secrets.GITHUB_TOKEN }},scope=${cache_scope} \
               --cache-to type=gha,mode=max,ghtoken=${{ secrets.GITHUB_TOKEN }},scope=${cache_scope}" \
             IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
