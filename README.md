@@ -6,7 +6,7 @@ A collection of container images with a FIPS-enabled OpenSSL build.
 
 ### `debian-fips`
 
-Debian Bookworm (slim) with OpenSSL built with FIPS support enabled.
+Debian Trixie (slim) with OpenSSL built with FIPS support enabled.
 
 ### `xmlsec1-fips`
 
@@ -14,4 +14,4 @@ Built on top of `debian-fips`, with xmlsec1 built and installed.
 
 ### `python-fips`
 
-Built on top of `xmlsec1-fips`, with Python 3.12.3 built.
+Built on top of `xmlsec1-fips`, with the latest Python 3.12 and 3.13 version.
