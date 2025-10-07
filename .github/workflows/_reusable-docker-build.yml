@@ -46,7 +46,7 @@ jobs:
       - build-amd64
       - build-arm64
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # actions/checkout@v5
+      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # actions/checkout@v5
       - name: Login to GitHub Container Registry
         if: ${{ inputs.registry_ghcr }}
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # docker/login-action@v3
@@ -82,7 +82,7 @@ jobs:
       # Needed to write comments on PRs
       pull-requests: write
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # actions/checkout@v5
+      - uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493 # actions/checkout@v5
       - id: name
         run: |
           make \
