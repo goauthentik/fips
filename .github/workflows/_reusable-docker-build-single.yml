@@ -55,7 +55,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: crazy-max/ghaction-github-runtime@3cb05d89e1f492524af3d41a1c98c83bc3025124 # crazy-max/ghaction-github-runtime@v3
+      - uses: crazy-max/ghaction-github-runtime@af2ed951d9542c4307c5e881816c1c63855a02fb # crazy-max/ghaction-github-runtime@v3
       - id: build
         run: |
           set -xe
