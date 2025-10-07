@@ -47,7 +47,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # actions/checkout@v5
-      - uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # docker/setup-qemu-action@v3.6.0
+      - uses: docker/setup-qemu-action@e77e8065d9f7ec6abdd9838668cd7b43924dd64d # docker/setup-qemu-action@v3.6.0
       - uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # docker/setup-buildx-action@v3
       - if: ${{ inputs.registry_ghcr }}
         uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # docker/login-action@v3
