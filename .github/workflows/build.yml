@@ -35,6 +35,7 @@ jobs:
     needs:
       - xmlsec1-fips
     strategy:
+      fail-fast: false
       matrix:
         version:
           - "3.12.12" # renovate: python
