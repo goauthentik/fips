@@ -37,8 +37,8 @@ jobs:
     strategy:
       matrix:
         version:
-          - "3.12.11" # renovate: python
-          - "3.13.7" # renovate: python
+          - "3.12.12" # renovate: python
+          - "3.13.9" # renovate: python
           - "3.14.0" # renovate: python
     name: python-fips
     uses: ./.github/workflows/_reusable-docker-build.yml
