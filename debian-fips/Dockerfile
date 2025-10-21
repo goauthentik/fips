@@ -40,6 +40,6 @@ RUN --mount=type=bind,target=/output,from=builder-openssl,src=/output \
     /build/fipsinstall.sh && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends ca-certificates wget && \
+    apt-get install -y --no-install-recommends ca-certificates wget curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
