@@ -25,7 +25,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "XMLSEC_VERSION = (?<currentValue>.*) # renovate: (?<packageName>[\\w\\d\\/]+)"
+        "# renovate: gh:(?<packageName>[\\w\\d\\/]+)\nXMLSEC_VERSION = (?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver"
