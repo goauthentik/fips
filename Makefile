@@ -22,7 +22,7 @@ OPENSSL_VERSION_SUFFIX = ak-fips
 PYTHON_VERSION = 3.13.7
 PYTHON_VERSION_TAG = ak-fips-${COMMIT}
 # https://github.com/lsh123/xmlsec/releases
-XMLSEC_VERSION = 1.3.7 # renovate: lsh123/xmlsec
+XMLSEC_VERSION = 1.3.9 # renovate: lsh123/xmlsec
 
 all: debian-fips xmlsec1-fips python-fips
 
