@@ -17,6 +17,18 @@
       "datasourceTemplate": "python-version",
       "versioningTemplate": "python",
       "depNameTemplate": "python"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "Makefile"
+      ],
+      "matchStringsStrategy": "any",
+      "matchStrings": [
+        "XMLSEC_VERSION = (?<currentValue>.*) # renovate: (?<packageName>[\\w\\d\\/]+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "semver"
     }
   ],
   "packageRules": [
