@@ -33,9 +33,14 @@ help:  ## Show this help
 		sort
 	@echo ""
 
+define image_suffix
+	$(eval _generated_suffix := ${ARCH}$(if $(strip $(IMAGE_SUFFIX)),-pr-${IMAGE_SUFFIX},))
+endef
+
 debian-fips-name:
+	$(call image_suffix)
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian)
-	$(eval full := ${image}:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}${ARCH})
+	$(eval full := ${image}:${DEBIAN_CODENAME}-slim-fips${_generated_suffix})
 ifdef GITHUB_OUTPUT
 	@echo image=$(image) >> ${GITHUB_OUTPUT}
 	@echo full=$(full) >> ${GITHUB_OUTPUT}
@@ -58,8 +63,9 @@ debian-fips-test: debian-fips-name
 		openssl list -providers -provider default -provider base -provider fips
 
 xmlsec1-fips-name:
+	$(call image_suffix)
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1)
-	$(eval full := ${image}:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
+	$(eval full := ${image}:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${_generated_suffix})
 ifdef GITHUB_OUTPUT
 	@echo image=$(image) >> ${GITHUB_OUTPUT}
 	@echo full=$(full) >> ${GITHUB_OUTPUT}
@@ -68,7 +74,7 @@ endif
 xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
 		-t ${full} \
-		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${IMAGE_SUFFIX}" \
+		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${_generated_suffix}" \
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
 
 xmlsec1-fips-test: xmlsec1-fips-name
@@ -80,8 +86,9 @@ xmlsec1-fips-test: xmlsec1-fips-name
 		xmlsec1 --version
 
 python-fips-name:
+	$(call image_suffix)
 	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-python)
-	$(eval full := ${image}:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}${ARCH})
+	$(eval full := ${image}:${PYTHON_VERSION}-slim-${DEBIAN_CODENAME}-fips${_generated_suffix})
 ifdef GITHUB_OUTPUT
 	@echo image=$(image) >> ${GITHUB_OUTPUT}
 	@echo full=$(full) >> ${GITHUB_OUTPUT}
@@ -90,7 +97,7 @@ endif
 python-fips: python-fips-name ## Build python on top of fips OpenSSL with xmlsec1
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
 		-t ${full} \
-		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${IMAGE_SUFFIX}" \
+		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${_generated_suffix}" \
 		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
 		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}"
 
