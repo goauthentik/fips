@@ -10,7 +10,7 @@
         "/^Makefile$/"
       ],
       "matchStrings": [
-        "#\\s*renovate:\\s*?(suite=(?<suite>.*?))?\\s*depName=(?<depName>.*?)?\\sENV .*?_VERSION=\"(?<currentValue>.*)\""
+        "#\\s*renovate:\\s*?(suite=(?<suite>.*?))?\\s*depName=(?<depName>.*?)?\\s.*?_VERSION = (?<currentValue>.*)"
       ],
       "registryUrlTemplate": "https://deb.debian.org/debian?suite={{#if suite }}{{suite}}{{else}}stable{{/if}}&components=main,contrib,non-free&binaryArch=amd64",
       "datasourceTemplate": "deb"
@@ -36,7 +36,7 @@
       ],
       "matchStringsStrategy": "any",
       "matchStrings": [
-        "# renovate: gh:(?<packageName>[\\w\\d\\/]+)\nXMLSEC_VERSION = (?<currentValue>.*)"
+        "# renovate: gh:(?<packageName>[\\w\\d\\/]+)\n.*?_VERSION = (?<currentValue>.*)"
       ],
       "datasourceTemplate": "github-releases",
       "versioningTemplate": "semver"
