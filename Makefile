@@ -15,7 +15,7 @@ COMMIT = $(shell git --git-dir ${PWD}/.git rev-parse --short HEAD)
 DEBIAN_CODENAME = trixie
 # This version refers to the debian package version
 # renovate: suite=trixie depName=openssl
-OPENSSL_VERSION = 3.5.1
+OPENSSL_VERSION = 3.5.4-1~deb13u1
 # https://openssl-library.org/source/
 OPENSSL_FIPS_MODULE_VERSION = 3.1.2
 OPENSSL_VERSION_SUFFIX = ak-fips
