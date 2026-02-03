@@ -6,7 +6,7 @@ source common.sh
 # Build OpenSSL
 cd ${build_root}
 apt-get source openssl=${OPENSSL_VERSION}
-cd openssl-${OPENSSL_VERSION}/
+cd openssl-*
 
 # Add our build tag
 sed -i "s:BUILD_METADATA=:BUILD_METADATA=${OPENSSL_VERSION_SUFFIX}:" VERSION.dat
