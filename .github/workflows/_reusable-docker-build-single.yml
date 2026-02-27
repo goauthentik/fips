@@ -90,7 +90,7 @@ jobs:
           short_digest=$(echo $full_digest | sed 's/.*@//g')
           echo "full_digest=${full_digest}" >> ${GITHUB_OUTPUT}
           echo "short_digest=${short_digest}" >> ${GITHUB_OUTPUT}
-      - uses: actions/attest-build-provenance@e4d4f7c39adfa4c260fb5c147f0622000aa14b99 # v4.0.0
+      - uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-name: ${{ steps.build.outputs.image }}
           subject-digest: ${{ steps.digest.outputs.short_digest }}
