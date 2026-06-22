@@ -2,7 +2,7 @@
 set -e -u -o pipefail
 
 build_root="/build"
-build_deps="wget gnupg build-essential libxml2-dev libltdl-dev"
+build_deps="wget gnupg build-essential libxml2-dev libltdl-dev pkg-config"
 runtime_deps="libltdl7 libxml2"
 
 mkdir -p ${build_root}
