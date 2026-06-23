@@ -20,7 +20,7 @@ OPENSSL_VERSION = 3.5.6-1~deb13u1
 OPENSSL_FIPS_MODULE_VERSION = 3.1.2
 OPENSSL_VERSION_SUFFIX = ak-fips
 # https://www.python.org/doc/versions/
-PYTHON_VERSION = 3.13.7
+PYTHON_VERSION = 3.14.6
 PYTHON_VERSION_TAG = ak-fips-${COMMIT}
 # renovate: gh:lsh123/xmlsec
 XMLSEC_VERSION = 1.3.12
@@ -110,4 +110,32 @@ python-fips-test: python-fips-name
 	docker run --rm ${full} \
 		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"
 
-test: debian-fips-test xmlsec1-fips-test python-fips-test
+python-fips-freethreading-name:
+	$(call image_suffix)
+	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX})
+	$(eval full := ${image}:${PYTHON_VERSION}t-slim-${DEBIAN_CODENAME}-fips${_generated_suffix})
+ifdef GITHUB_OUTPUT
+	@echo image=$(image) >> ${GITHUB_OUTPUT}
+	@echo full=$(full) >> ${GITHUB_OUTPUT}
+endif
+
+python-fips-freethreading: python-fips-freethreading-name ## Build python on top of fips OpenSSL with xmlsec1 and freethreading enabled
+	docker build ${DOCKER_BUILDX_FLAGS} python-fips/ \
+		-t ${full} \
+		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-xmlsec1:${XMLSEC_VERSION}-slim-${DEBIAN_CODENAME}-fips${_generated_suffix}" \
+		--build-arg="PYTHON_VERSION=${PYTHON_VERSION}" \
+		--build-arg="PYTHON_VERSION_TAG=${PYTHON_VERSION_TAG}" \
+		--build-arg="PYTHON_FREETHREADING=true"
+
+python-fips-freethreading-test: python-fips-freethreading-name
+	@echo "### Python version ###"
+	docker run --rm ${full} \
+		python --version
+	@echo "### Python SSL version ###"
+	docker run --rm ${full} \
+		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"
+	@echo "### Python freethreading ###"
+	docker run --rm ${full} \
+		python -c "import sys; print('Freethreading status:', sys._is_gil_enabled())"
+
+test: debian-fips-test xmlsec1-fips-test python-fips-test python-fips-freethreading-test
