@@ -12,6 +12,7 @@ FROM ${BUILD_IMAGE}
 
 ARG PYTHON_VERSION
 ARG PYTHON_VERSION_TAG
+ARG PYTHON_FREETHREADING
 
 # ensure local python is preferred over distribution python
 ENV PATH /usr/local/bin:$PATH
@@ -69,6 +70,7 @@ RUN set -eux; \
 		--enable-shared \
 		$(test "${gnuArch%%-*}" != 'riscv64' && echo '--with-lto') \
 		--with-ensurepip \
+		$(test "$PYTHON_FREETHREADING" == 'true' && echo '--disable-gil') \
 	; \
 	sed -i 's/^GITTAG=.*/GITTAG=echo ${PYTHON_VERSION_TAG}/g' Makefile; \
 	sed -i 's/^GITBRANCH=.*/GITBRANCH=echo ${PYTHON_VERSION_TAG}/g' Makefile; \

@@ -41,10 +41,13 @@ jobs:
           - "3.13.9" # renovate: python
           - "3.14.6" # renovate: python
           - "3.15.0a2" # renovate: python
+        freethreading:
+          - ""
+          - "-freethreading"
     name: python-fips
     uses: ./.github/workflows/_reusable-docker-build.yml
     secrets: inherit
     with:
-      target_name: python-fips
+      target_name: "python-fips${{ matrix.freethreading }}"
       image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
       variables: PYTHON_VERSION=${{ matrix.version }}
