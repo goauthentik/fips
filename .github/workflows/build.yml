@@ -40,7 +40,7 @@ jobs:
         version:
           - "3.13.9" # renovate: python
           - "3.14.7" # renovate: python
-          - "3.15.0a2" # renovate: python
+          - "3.15.0rc1" # renovate: python
         freethreading:
           - ""
           - "-freethreading"
