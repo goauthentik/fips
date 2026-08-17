@@ -1,4 +1,4 @@
-.PHONY: all push test debian-fips python-fips xmlsec1-fips
+.PHONY: all push test debian-fips debian-fips-dev python-fips xmlsec1-fips
 .SHELLFLAGS += ${SHELLFLAGS} -e
 
 DOCKER_BUILDX_FLAGS =
@@ -25,7 +25,7 @@ PYTHON_VERSION_TAG = ak-fips-${COMMIT}
 # renovate: gh:lsh123/xmlsec
 XMLSEC_VERSION = 1.3.12
 
-all: debian-fips xmlsec1-fips python-fips
+all: debian-fips debian-fips-dev xmlsec1-fips python-fips
 
 help:  ## Show this help
 	@echo "\nSpecify a command. The choices are:\n"
@@ -47,8 +47,9 @@ ifdef GITHUB_OUTPUT
 	@echo full=$(full) >> ${GITHUB_OUTPUT}
 endif
 
-debian-fips: debian-fips-name ## Build base image (debian with fips-enabled OpenSSL)
-	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
+debian-fips: debian-fips-name ## Build the runtime base image (debian with fips-enabled OpenSSL)
+	docker build ${DOCKER_BUILDX_FLAGS} debian-fips/ \
+		--target runtime \
 		-t ${full} \
 		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}" \
 		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
@@ -62,6 +63,35 @@ debian-fips-test: debian-fips-name
 	@echo "### Test that base images has OpenSSL with FIPS enabled ###"
 	docker run --rm ${full} \
 		openssl list -providers -provider default -provider base -provider fips
+	@echo "### Test that the runtime image doesn't have build tooling ###"
+	docker run --rm --entrypoint sh ${full} -c \
+		'! command -v curl && ! command -v wget && ! dpkg -s libssl-dev >/dev/null 2>&1 && echo "build tooling absent"'
+
+debian-fips-dev-name:
+	$(call image_suffix)
+	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-debian)
+	$(eval full := ${image}:${DEBIAN_CODENAME}-slim-fips-dev${_generated_suffix})
+ifdef GITHUB_OUTPUT
+	@echo image=$(image) >> ${GITHUB_OUTPUT}
+	@echo full=$(full) >> ${GITHUB_OUTPUT}
+endif
+
+debian-fips-dev: debian-fips-dev-name ## Build the build base image (runtime + libssl-dev, curl, wget)
+	docker build ${DOCKER_BUILDX_FLAGS} debian-fips/ \
+		--target dev \
+		-t ${full} \
+		--build-arg="DEBIAN_CODENAME=${DEBIAN_CODENAME}" \
+		--build-arg="OPENSSL_VERSION=${OPENSSL_VERSION}" \
+		--build-arg="OPENSSL_FIPS_MODULE_VERSION=${OPENSSL_FIPS_MODULE_VERSION}" \
+		--build-arg="OPENSSL_VERSION_SUFFIX=${OPENSSL_VERSION_SUFFIX}"
+
+debian-fips-dev-test: debian-fips-dev-name
+	@echo "### Test that the dev image has OpenSSL with FIPS enabled ###"
+	docker run --rm ${full} \
+		openssl list -providers -provider default -provider base -provider fips
+	@echo "### Test that the dev image has build tooling ###"
+	docker run --rm --entrypoint sh ${full} -c \
+		'command -v curl && command -v wget && dpkg -s libssl-dev >/dev/null && echo "build tooling present"'
 
 xmlsec1-fips-name:
 	$(call image_suffix)
@@ -75,7 +105,7 @@ endif
 xmlsec1-fips: xmlsec1-fips-name ## Build image with xmlsec1 (on top of debian)
 	docker build ${DOCKER_BUILDX_FLAGS} $@/ \
 		-t ${full} \
-		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips${_generated_suffix}" \
+		--build-arg="BUILD_IMAGE=${IMAGE_REPO}/${IMAGE_PREFIX}-debian:${DEBIAN_CODENAME}-slim-fips-dev${_generated_suffix}" \
 		--build-arg="XMLSEC_VERSION=${XMLSEC_VERSION}"
 
 xmlsec1-fips-test: xmlsec1-fips-name
@@ -138,4 +168,4 @@ python-fips-freethreading-test: python-fips-freethreading-name
 	docker run --rm ${full} \
 		python -c "import sys; print('Freethreading status:', sys._is_gil_enabled())"
 
-test: debian-fips-test xmlsec1-fips-test python-fips-test python-fips-freethreading-test
+test: debian-fips-test debian-fips-dev-test xmlsec1-fips-test python-fips-test python-fips-freethreading-test

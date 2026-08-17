@@ -1,4 +1,4 @@
-ARG BUILD_IMAGE=ghcr.io/goauthentik/fips-debian:trixie-slim-fips
+ARG BUILD_IMAGE=ghcr.io/goauthentik/fips-debian:trixie-slim-fips-dev
 
 FROM ${BUILD_IMAGE}
 
