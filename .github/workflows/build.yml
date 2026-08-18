@@ -22,18 +22,9 @@ jobs:
     with:
       target_name: debian-fips
       image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
-  debian-fips-dev:
-    needs:
-      - debian-fips
-    name: debian-fips-dev
-    uses: ./.github/workflows/_reusable-docker-build.yml
-    secrets: inherit
-    with:
-      target_name: debian-fips-dev
-      image_suffix: "${{ github.event_name == 'pull_request' && github.event.number || '' }}"
   xmlsec1-fips:
     needs:
-      - debian-fips-dev
+      - debian-fips
     name: xmlsec1-fips
     uses: ./.github/workflows/_reusable-docker-build.yml
     secrets: inherit
