@@ -17,13 +17,17 @@ patch -b /etc/ssl/openssl.cnf <<EOF
 < # .include fipsmodule.cnf
 ---
 > .include /etc/ssl/fipsmodule.cnf
+54a55
+> alg_section = algorithm_sect
 61c62
 < # fips = fips_sect
 ---
 > fips = fips_sect
-73a76,79
-> [default_sect]
+72c73
+< # activate = 1
+---
 > activate = 1
+73a75,76
 > [algorithm_sect]
 > default_properties = fips=yes
 EOF
@@ -33,3 +37,4 @@ apt-get dist-clean
 
 # Test that FIPS provider loads
 openssl list -providers -provider default -provider base -provider fips
+! openssl ciphers | grep CHA
