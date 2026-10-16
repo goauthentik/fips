@@ -112,7 +112,7 @@ python-fips-test: python-fips-name
 
 python-fips-freethreading-name:
 	$(call image_suffix)
-	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX})
+	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-python)
 	$(eval full := ${image}:${PYTHON_VERSION}t-slim-${DEBIAN_CODENAME}-fips${_generated_suffix})
 ifdef GITHUB_OUTPUT
 	@echo image=$(image) >> ${GITHUB_OUTPUT}
@@ -136,6 +136,6 @@ python-fips-freethreading-test: python-fips-freethreading-name
 		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"
 	@echo "### Python freethreading ###"
 	docker run --rm ${full} \
-		python -c "import sys; print('Freethreading status:', sys._is_gil_enabled())"
+		python -c "import sys; print('GIL enabled:', sys._is_gil_enabled()); sys.exit(sys._is_gil_enabled())"
 
 test: debian-fips-test xmlsec1-fips-test python-fips-test python-fips-freethreading-test
