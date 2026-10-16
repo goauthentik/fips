@@ -112,7 +112,7 @@ python-fips-test: python-fips-name
 
 python-fips-freethreading-name:
 	$(call image_suffix)
-	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX})
+	$(eval image := ${IMAGE_REPO}/${IMAGE_PREFIX}-python)
 	$(eval full := ${image}:${PYTHON_VERSION}t-slim-${DEBIAN_CODENAME}-fips${_generated_suffix})
 ifdef GITHUB_OUTPUT
 	@echo image=$(image) >> ${GITHUB_OUTPUT}
