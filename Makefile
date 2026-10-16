@@ -136,6 +136,6 @@ python-fips-freethreading-test: python-fips-freethreading-name
 		python -c "from ssl import OPENSSL_VERSION; print(OPENSSL_VERSION)"
 	@echo "### Python freethreading ###"
 	docker run --rm ${full} \
-		python -c "import sys; print('Freethreading status:', sys._is_gil_enabled())"
+		python -c "import sys; print('GIL enabled:', sys._is_gil_enabled()); sys.exit(sys._is_gil_enabled())"
 
 test: debian-fips-test xmlsec1-fips-test python-fips-test python-fips-freethreading-test
