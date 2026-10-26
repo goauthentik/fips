@@ -60,7 +60,7 @@ jobs:
             IMAGE_SUFFIX="${{ inputs.image_suffix }}" \
             ${{ inputs.variables }} \
             ${{ inputs.target_name }}-name
-      - uses: int128/docker-manifest-create-action@a118e9fe12455375d4810aa318c20e6dba77288e # v2
+      - uses: int128/docker-manifest-create-action@d6ac360314337bbfb870747d9616b83118acb330 # v2
         id: build
         with:
           tags: ${{ steps.name.outputs.full }}
